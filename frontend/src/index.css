@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+    /* планшеты */
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 12px;
+    /* мобильные */
+  }
+}
+
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
+@layer utilities {
+  .swiper-padding {
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+  }
+}
+
+@layer components {
+  .noUi-target {
+    @apply bg-gray-200 rounded-lg h-2;
+  }
+
+  .noUi-connect {
+    @apply bg-indigo-600;
+  }
+
+  .noUi-handle {
+    @apply bg-white border-2 border-indigo-600 rounded-full shadow;
+    width: 18px;
+    height: 18px;
+    top: -6px;
+  }
+
+  .noUi-tooltip {
+    @apply bg-indigo-600 text-white text-xs rounded px-2 py-0.5;
+  }
+}
+
+:root {
+  --color-primary: #214784;
+  --color-secondary: #F3F7FF;
+  --color-accent: #B1740F;
+  --color-text-bg: #7991B8;
+  --font-family: 'Literata', serif;
+  --font-size-h1: clamp(1.8rem, 3vw, 2.5rem);
+  --font-size-regular: clamp(0.7rem, 1vw, 1rem);
+  --line-height-title: 4rem;
+}
+
+body {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-family: var(--font-family);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/src/assets/images/exclusive-paper.png');
+  background-repeat: repeat;
+  opacity: 0.7;
+  pointer-events: none; 
+  z-index: 9999;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

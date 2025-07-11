@@ -1,0 +1,78 @@
+.category-card {
+  text-decoration: none;
+}
+
+.sprite-icon {
+  display: block;
+  margin: 0 auto;
+  width: 197px;
+  height: 157px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sprite-icon::before,
+.sprite-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.sprite-icon::before {
+  z-index: 2;
+  opacity: 1;
+}
+
+.sprite-icon::after {
+  z-index: 1;
+}
+
+.category-card:hover .sprite-icon::before {
+  opacity: 0;
+}
+
+.category-card:hover h3 {
+  color: var(--color-accent);
+}
+
+/* Конкретные иконки */
+
+.icon-ink::before {
+  background-image: url('/images/category1.webp');
+  background-position: -198px 0;
+  background-size: auto 100%;
+  background-color: #fff;
+}
+
+.icon-ink::after {
+  background-image: url('/images/category1.webp');
+  background-position: 0 0;
+  background-size: auto 100%;
+}
+
+.icon-pen::before {
+  background-image: url('/images/category2a.webp');
+  background-position: 12px 0px;
+  background-size: auto 100%;
+}
+
+.icon-pen::after {
+  background-image: url('/images/category2b.webp');
+  background-position: 12px 0px;
+  background-size: auto 100%;
+}
+
+.icon-notebook::before {
+  background-image: url('/images/category3a.webp');
+  background-position: -15px 0px;
+  background-size: auto 94%;
+}
+
+.icon-notebook::after {
+  background-image: url('/images/category3b.webp');
+  background-position: -15px 0px;
+  background-size: auto 94%;
+}
