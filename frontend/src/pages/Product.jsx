@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
 import SimilarProducts from '../components/SimilarProducts';
+import { Link } from 'react-router-dom';
 
 const Product = () => {
   const { productId } = useParams();
