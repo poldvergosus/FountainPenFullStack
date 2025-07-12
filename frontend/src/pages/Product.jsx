@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
+import SimilarProducts from '../components/SimilarProducts';
 
 const Product = () => {
   const { productId } = useParams();
@@ -56,37 +57,38 @@ const Product = () => {
 
         </div>
 
-{/* Заголовок секции */}
-<h2 className="section-title flex items-center justify-center font-literata font-bold text-primary text-[clamp(1.8rem,4vw,2.5rem)] leading-[71px] gap-8 relative max-w-[90%] mx-auto mb-2">
-  <span className="flex-1 h-[3px] bg-primary"></span>
-  Характеристики
-  <span className="flex-1 h-[3px] bg-primary"></span>
-</h2>
+        {/* Заголовок секции */}
+        <h2 className="section-title flex items-center justify-center font-literata font-bold text-primary text-[clamp(1.8rem,4vw,2.5rem)] leading-[71px] gap-8 relative max-w-[90%] mx-auto mb-2">
+          <span className="flex-1 h-[3px] bg-primary"></span>
+          Характеристики
+          <span className="flex-1 h-[3px] bg-primary"></span>
+        </h2>
 
-{/* Контейнер характеристик */}
-<div className="max-w-5xl mx-auto w-full">
-  <div className="bg-primary text-white w-full">
+        {/* Контейнер характеристик */}
+        <div className="max-w-5xl mx-auto w-full">
+          <div className="bg-primary text-white w-full">
 
-    <div className="flex justify-between py-4 border-b-2 border-white px-4">
-      <span className="font-medium">Бренд</span>
-      <span>{productData.brand}</span>
-    </div>
-    <div className="flex justify-between py-4 border-b-2 border-white px-4">
-      <span className="font-medium">Размер пера</span>
-      <span>{productData.size}</span>
-    </div>
-    <div className="flex justify-between py-4 border-b-2 border-white px-4">
-      <span className="font-medium">Материал пера</span>
-      <span>{productData.nibmaterial ? 'Золото' : 'Сталь'}</span>
-    </div>
-    <div className="flex justify-between py-4 border-b-2 border-white px-4">
-      <span className="font-medium">Категория</span>
-      <span>{productData.category}</span>
-    </div>
+            <div className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4  hover:bg-accent transition">
+              <span className="font-medium">Бренд</span>
+              <span>{productData.brand}</span>
+            </div>
+            <div className=" cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition">
+              <span className="font-medium">Размер пера</span>
+              <span>{productData.size}</span>
+            </div>
+            <div className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition">
+              <span className="font-medium">Материал пера</span>
+              <span>{productData.nibmaterial ? 'Золото' : 'Сталь'}</span>
+            </div>
+            <div className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition">
+              <span className="font-medium">Категория</span>
+              <span>{productData.category}</span>
+            </div>
 
-  </div>
-</div>
+          </div>
+        </div>
 
+<SimilarProducts  category={productData.category} subCategory={productData.brand}/>
       </div>
     </div>
   ) : <div className='opacity-0'></div>
