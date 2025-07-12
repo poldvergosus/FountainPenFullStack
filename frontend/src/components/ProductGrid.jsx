@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import React, { useContext } from 'react'
 import { ShopContext } from "../context/ShopContext";
+import { Link } from 'react-router-dom';
 
 const ProductGrid = ({ title, products, columns = 3 }) => {
   const { currency } = useContext(ShopContext);
@@ -22,7 +23,8 @@ const responsiveGridClass = `
       )}
       <div className={clsx('grid gap-3', responsiveGridClass)}>
         {products.map((product, index) => (
-          <div
+          <Link
+  to={`/product/${product.id}`} 
             key={index}
             className="border-[4px] border-primary p-[0.2rem] w-full h-full flex flex-col">
             <div className="border-[2px] border-primary p-4 flex flex-col flex-grow relative">
@@ -51,7 +53,7 @@ const responsiveGridClass = `
                 </strong>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>
