@@ -1,9 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import "./navbar.css";
 import { assets } from "../assets/assets"; 
 import { NavLink } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
+
+const {setShowSearch} =useContext(ShopContext)
+
   useEffect(() => {
     // Для кнопки поиска
     document.documentElement.style.setProperty(
@@ -77,7 +81,7 @@ const Navbar = () => {
 
         {/* Кнопки справа */}
         <div className="main-actions">
-          <button className="search-button" aria-label="Поиск"></button>
+          <button onClick={()=>setShowSearch(prev => !prev)} className="search-button" aria-label="Поиск"></button>
           <NavLink to="/login">
             <div className="auth-button">
               <span>

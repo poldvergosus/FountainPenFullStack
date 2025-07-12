@@ -23,7 +23,7 @@ const Collection = () => {
   // =========================
   //  ДАННЫЕ ПРОДУКТОВ
   // =========================
-  const { products } = useContext(ShopContext);
+  const { products, search, showSearch } = useContext(ShopContext);
 
   // 👉 Ценовой диапазон
   const prices = products.map(p => Number(p.price)).filter(p => !isNaN(p));
