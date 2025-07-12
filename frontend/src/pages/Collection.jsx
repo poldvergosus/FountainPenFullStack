@@ -5,6 +5,7 @@ import noUiSlider from 'nouislider';
 import 'nouislider/dist/nouislider.css';
 import './Collection.css';
 import { Disclosure } from '@headlessui/react'
+import { useLocation } from 'react-router-dom';
 
 
 const Collection = () => {
@@ -24,14 +25,17 @@ const Collection = () => {
   //  ДАННЫЕ ПРОДУКТОВ
   // =========================
   const { products, search, showSearch } = useContext(ShopContext);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const querySearch = queryParams.get('q')?.toLowerCase() || "";
 
-  // 👉 Ценовой диапазон
+  //  Ценовой диапазон
   const prices = products.map(p => Number(p.price)).filter(p => !isNaN(p));
   const minPrice = prices.length ? Math.min(...prices) : 0;
   const maxPrice = prices.length ? Math.max(...prices) : 100000;
   const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
 
-  // 👉 Массивы фильтров (бренды, размеры, цвета)
+  //  Массивы фильтров (бренды, размеры, цвета)
   const allBrands = [...new Set(products.map(p => p.brand).filter(Boolean))];
   const allSizes = [...new Set(products.map(p => p.size).filter(Boolean))];
 
@@ -56,7 +60,13 @@ const Collection = () => {
         selectedColors.length === 0 ||
         (p.colors && p.colors.some(color => selectedColors.includes(color.name)));
 
-      return matchesPrice && matchesBrand && matchesSize && matchesColor;
+      // главный фильтр по поиску
+      const matchesSearch =
+        !querySearch ||
+        p.title.toLowerCase().includes(querySearch) ||
+        (p.brand && p.brand.toLowerCase().includes(querySearch));
+
+      return matchesPrice && matchesBrand && matchesSize && matchesColor && matchesSearch;
     });
 
     // Сортировка по цене
@@ -68,7 +78,7 @@ const Collection = () => {
       if (sortOrder === 'price-desc') return priceB - priceA;
       return 0;
     });
-  }, [products, priceRange, selectedBrands, selectedSizes, selectedColors, sortOrder]);
+  }, [products, priceRange, selectedBrands, selectedSizes, selectedColors, sortOrder, querySearch]);
 
   // =========================
   // ОСНОВНЫЕ HANDLERS ДЛЯ ФИЛЬТРОВ
@@ -356,6 +366,12 @@ const Collection = () => {
               <option value="price-desc">По убыванию цены</option>
             </select>
           </div>
+
+          {querySearch && (
+            <h2 className="text-lg sm:text-xl font-medium mb-6 text-primary">
+              Результаты поиска для: <span className="italic font-semibold">{querySearch}</span>
+            </h2>
+          )}
           <ProductGrid products={filteredProducts.slice(0, visibleCount)} columns={3} />
 
           {/* Показать ещё */}
