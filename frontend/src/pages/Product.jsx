@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const Product = () => {
   const { productId } = useParams();
-  const { products } = useContext(ShopContext);
+  const { products, addToCart } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
   const { currency } = useContext(ShopContext);
@@ -39,7 +39,7 @@ const Product = () => {
               <img src={image} alt={productData.title} className="w-ful border-4 border-primary " />
             </div>
             <p className='text-3xl text-primary font-extrabold mt-4'>{productData.price} {currency} </p>
-            <button className='text-2xl mt-4 w-full bg-primary text-white font-bold py-3 hover:bg-accent transition'>В корзину</button>
+            <button onClick={()=>addToCart(productData.id)} className='text-2xl mt-4 w-full bg-primary text-white font-bold py-3 hover:bg-accent transition'>В корзину</button>
           </div>
 
           {/* Правая часть*/}

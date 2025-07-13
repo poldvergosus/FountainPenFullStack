@@ -6,7 +6,7 @@ import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
 
-const {setShowSearch} =useContext(ShopContext)
+const {setShowSearch, getCartCount} =useContext(ShopContext);
 
   useEffect(() => {
     // Для кнопки поиска
@@ -96,7 +96,7 @@ const {setShowSearch} =useContext(ShopContext)
             <NavLink to="/cart">
               <div className="cart-button">
                 <div className="cart-icon">
-                  <span className="cart-count">2</span>
+                  <span className="cart-count">{getCartCount()}</span>
                 </div>
                 <div className="cart-price">1200 р.</div>
               </div>
