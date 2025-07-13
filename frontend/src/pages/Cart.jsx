@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
+import CartTotal from '../components/CartTotal';
 
 const Cart = () => {
 
@@ -42,9 +43,14 @@ const Cart = () => {
                     </div>
                   </div>
                 </div>
-                <input className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1' type="number" min={1} defaultValue={item.quantity} />
+                <input onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value >= 1) {
+                    updateQuantity(item.id, value);
+                  }
+                }} className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1' type="number" min={1} defaultValue={item.quantity} />
                 <div className="flex justify-end">
-                  <svg onClick={()=>updateQuantity(item.id, 0)}
+                  <svg onClick={() => updateQuantity(item.id, 0)}
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-4 h-4 cursor-pointer text-primary hover:text-accent transition"
                     fill="none"
@@ -58,6 +64,12 @@ const Cart = () => {
             )
           })
         }
+      </div>
+
+      <div className='flex justify-end my-20'>
+        <div className='w-full sm:w-[450px]'>
+          <CartTotal />
+        </div>
       </div>
     </div>
   )
