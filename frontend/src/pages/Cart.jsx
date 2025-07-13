@@ -3,7 +3,7 @@ import { ShopContext } from '../context/ShopContext'
 
 const Cart = () => {
 
-  const { products, currency, cartItems } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity } = useContext(ShopContext);
 
   const [cartData, setCartData] = useState([]);
 
@@ -44,7 +44,7 @@ const Cart = () => {
                 </div>
                 <input className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1' type="number" min={1} defaultValue={item.quantity} />
                 <div className="flex justify-end">
-                  <svg
+                  <svg onClick={()=>updateQuantity(item.id, 0)}
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-4 h-4 cursor-pointer text-primary hover:text-accent transition"
                     fill="none"

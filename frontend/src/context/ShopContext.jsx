@@ -22,26 +22,32 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
   }
 
-const getCartCount = () => {
-  let totalCount = 0;
-  Object.values(cartItems).forEach(qty => {
-    if (qty > 0) totalCount += qty;
-  });
-  return totalCount;
-};
-
-  const value = {
-    products, currency,
-    search, setSearch, showSearch, setShowSearch,
-    cartItems, addToCart,
-    getCartCount
+  const getCartCount = () => {
+    let totalCount = 0;
+    Object.values(cartItems).forEach(qty => {
+      if (qty > 0) totalCount += qty;
+    });
+    return totalCount;
   };
 
-  return (
-    <ShopContext.Provider value={value}>
-      {props.children}
-    </ShopContext.Provider>
-  );
+  const updateQuantity = async(itemId, quantity) => {
+  let cartData = structuredClone(cartItems);
+  cartData[itemId] = quantity;
+  setCartItems(cartData);
+}
+
+const value = {
+  products, currency,
+  search, setSearch, showSearch, setShowSearch,
+  cartItems, addToCart,
+  getCartCount, updateQuantity
+};
+
+return (
+  <ShopContext.Provider value={value}>
+    {props.children}
+  </ShopContext.Provider>
+);
 };
 
 export default ShopContextProvider;
