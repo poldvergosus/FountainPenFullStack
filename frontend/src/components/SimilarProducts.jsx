@@ -23,7 +23,6 @@ const SimilarProducts = ({ category, subCategory }) => {
       const similar = productsCopy.slice(0, 5);
 
       setRelated(similar);
-      console.log('Похожие товары:', similar); // ✅ будет выводиться
       console.log('Похожие товары:', similar); 
     }
   }, [products, category, subCategory]);
