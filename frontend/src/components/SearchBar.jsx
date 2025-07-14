@@ -12,7 +12,8 @@ const SearchBar = () => {
 
   const handleSelectProduct = (title) => {
     setSearch(title);
-    navigate('/collection');
+    navigate(`/collection?q=${encodeURIComponent(title)}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSubmit = (e) => {
@@ -23,13 +24,13 @@ const SearchBar = () => {
 
 
   return showSearch ? (
-    <div className='text-center'>
+    <div className='text-center sticky top-0 z-50'>
       <form onSubmit={handleSubmit}>
         <div className='relative inline-block w-3/4 sm:w-1/2'>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className='w-full text-primary text-center border-b-[2px] border-primary focus:border-primary focus:outline-none bg-inherit text-md py-2'
+            className='w-3/4 text-primary text-center border-b-[2px] border-primary focus:border-primary focus:outline-none bg-white text-md py-2'
             type="text"
             placeholder='Искать'
           />
