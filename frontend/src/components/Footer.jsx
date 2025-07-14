@@ -122,7 +122,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <a
-                    href=""
+                    href="/contact"
                     className="no-underline text-[color:var(--color-primary)] block my-[1em]"
                   >
                     Контакты
@@ -130,7 +130,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <a
-                    href="/contact"
+                    href=""
                     className="no-underline text-[color:var(--color-primary)] block my-[1em]"
                   >
                     Возврат
