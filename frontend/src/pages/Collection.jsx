@@ -50,35 +50,48 @@ const Collection = () => {
   // =========================
   //  ФИЛЬТРАЦИЯ И СОРТИРОВКА
   // =========================
-  const filteredProducts = useMemo(() => {
-    const filtered = products.filter((p) => {
-      const price = Number(p.price);
-      const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
-      const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(p.brand);
-      const matchesSize = selectedSizes.length === 0 || selectedSizes.includes(p.size);
-      const matchesColor =
-        selectedColors.length === 0 ||
-        (p.colors && p.colors.some(color => selectedColors.includes(color.name)));
+const searchWords = querySearch.toLowerCase().split(" ").filter(Boolean);
 
-      // главный фильтр по поиску
-      const matchesSearch =
-        !querySearch ||
-        p.title.toLowerCase().includes(querySearch) ||
-        (p.brand && p.brand.toLowerCase().includes(querySearch));
+const filteredProducts = useMemo(() => {
+  const filtered = products.filter((p) => {
+    const price = Number(p.price);
+    const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
+    const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(p.brand);
+    const matchesSize = selectedSizes.length === 0 || selectedSizes.includes(p.size);
+    const matchesColor =
+      selectedColors.length === 0 ||
+      (p.colors && p.colors.some(color => selectedColors.includes(color.name)));
 
-      return matchesPrice && matchesBrand && matchesSize && matchesColor && matchesSearch;
-    });
+    const combinedText = `
+      ${p.title}
+      ${p.desc}
+      ${p.brand}
+      ${p.size}
+    `.toLowerCase();
 
-    // Сортировка по цене
-    return [...filtered].sort((a, b) => {
-      const priceA = Number(a.price);
-      const priceB = Number(b.price);
+    const matchesSearch =
+      searchWords.length === 0 ||
+      searchWords.every((word) => combinedText.includes(word));
 
-      if (sortOrder === 'price-asc') return priceA - priceB;
-      if (sortOrder === 'price-desc') return priceB - priceA;
-      return 0;
-    });
-  }, [products, priceRange, selectedBrands, selectedSizes, selectedColors, sortOrder, querySearch]);
+    return matchesPrice && matchesBrand && matchesSize && matchesColor && matchesSearch;
+  });
+
+  return [...filtered].sort((a, b) => {
+    const priceA = Number(a.price);
+    const priceB = Number(b.price);
+    if (sortOrder === 'price-asc') return priceA - priceB;
+    if (sortOrder === 'price-desc') return priceB - priceA;
+    return 0;
+  });
+}, [
+  products,
+  priceRange,
+  selectedBrands,
+  selectedSizes,
+  selectedColors,
+  sortOrder,
+  querySearch,
+]);
 
   // =========================
   // ОСНОВНЫЕ HANDLERS ДЛЯ ФИЛЬТРОВ
