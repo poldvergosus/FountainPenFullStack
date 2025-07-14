@@ -8,6 +8,7 @@ import footerLogo from "./images/footer_icon.webp";
 import blogLogo from "./images/blog_logo.svg";
 import newsletterLogo from "./images/newsletter_logo.svg";
 import background from "./images/footer.svg";
+import aboutus from "./images/about_us.jpg";
 
 // Руки
 import handLeft from "./images/hand_left.svg";
@@ -31,6 +32,7 @@ export const assets = {
   handLeft,
   handRight,
   newsletterLogo,
+  aboutus,
   background,
   ui: {
     cartSprite,

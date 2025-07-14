@@ -98,7 +98,7 @@ const Footer = () => {
               <ul className="list-none p-0">
                 <li>
                   <a
-                    href="#"
+                    href="/about"
                     className="no-underline text-[color:var(--color-primary)] block my-[1em]"
                   >
                     О нас
@@ -122,15 +122,15 @@ const Footer = () => {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href=""
                     className="no-underline text-[color:var(--color-primary)] block my-[1em]"
                   >
-                    Доставка
+                    Контакты
                   </a>
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="/contact"
                     className="no-underline text-[color:var(--color-primary)] block my-[1em]"
                   >
                     Возврат
