@@ -6,18 +6,18 @@ const SearchBar = () => {
   const { search, setSearch, showSearch, setShowSearch, products } = useContext(ShopContext);
   const navigate = useNavigate();
 
-const searchWords = search.toLowerCase().split(" ").filter(Boolean);
+  const searchWords = search.toLowerCase().split(" ").filter(Boolean);
 
-const matchingProducts = products.filter((product) => {
-  const combined = `
+  const matchingProducts = products.filter((product) => {
+    const combined = `
     ${product.title}
     ${product.desc}
     ${product.brand}
     ${product.size}
   `.toLowerCase();
 
-  return searchWords.every(word => combined.includes(word));
-}).slice(0, 4);
+    return searchWords.every(word => combined.includes(word));
+  }).slice(0, 4);
 
   const handleSelectProduct = (title) => {
     setSearch(title);
