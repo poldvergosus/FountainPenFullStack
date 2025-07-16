@@ -97,7 +97,7 @@ const singleProduct = async (req, res) => {
     try {
         const { productId } = req.body
         const product = await productModel.findById(productId)
-        res.json({ success: true, product })
+        res.json({success:true, product})
     } catch (error) {
         console.error('Ошибка добавления продукта:', error);
         res.status(500).json({ success: false, message: error.message });
