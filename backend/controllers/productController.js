@@ -14,7 +14,7 @@ const addProduct = async (req, res) => {
             nibmaterial,
             size,
             colors,
-            details 
+            details
         } = req.body;
 
         const image = req.file;
@@ -40,7 +40,7 @@ const addProduct = async (req, res) => {
             popular: popular === "true",
             category,
             brand,
-            nibmaterial: nibmaterial === "true", 
+            nibmaterial: nibmaterial === "true",
             size,
             colors: colors ? JSON.parse(colors) : [],
             details,
@@ -68,7 +68,15 @@ const addProduct = async (req, res) => {
 // function for list product
 
 const listProducts = async (req, res) => {
+    try {
 
+        const products = await productModel.find({});
+        res.json({ success: true, products })
+
+    } catch (error) {
+        console.error('Ошибка добавления продукта:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
 }
 
 // function for remove product
