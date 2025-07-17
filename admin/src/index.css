@@ -9,7 +9,22 @@
 
 }
 
+
+
+select,input,textarea{
+    border: 2 px solid #214784 ;
+    outline-color: #7991B8 ;
+    border-radius: 2px;
+    background:#F3F7FF;
+}
+
+
 .active{
     background-color: #ffebf5 ;
     border-color: #C586A5;
+}
+
+:root {
+  --color-primary: #214784;
+  --color-accent: #B1740F;
 }

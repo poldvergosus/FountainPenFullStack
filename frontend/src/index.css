@@ -43,11 +43,11 @@
   }
 
   .noUi-connect {
-    @apply bg-indigo-600;
+    @apply bg-[#214784];
   }
 
   .noUi-handle {
-    @apply bg-white border-2 border-indigo-600 rounded-full shadow;
+    @apply bg-white border-2 border-[#214784] rounded-full shadow;
     width: 18px;
     height: 18px;
     top: -6px;
