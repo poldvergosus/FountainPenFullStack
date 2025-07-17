@@ -8,8 +8,6 @@
     font-family: Literata;
 }
 
-
-
 select,
 input,
 textarea {
@@ -18,7 +16,6 @@ textarea {
     border-radius: 2px;
     background: #F3F7FF;
 }
-
 
 .active {
     background-color: #7991B8;;
