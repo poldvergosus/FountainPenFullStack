@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { assets } from '../assets/assets'
 import ColorPicker from '../components/ColorPicker.jsx'
+import axios from 'axios'
+import { backendUrl } from '../App'
 
-const Add = () => {
+const Add = ({ token }) => {
 
   const PRESET_COLORS = [
     { name: "Голубой", hex: "#229ED9" },
@@ -24,10 +26,35 @@ const Add = () => {
   const [colors, setColors] = useState(PRESET_COLORS);
   const [details, setDetails] = useState("")
 
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData()
+
+      formData.append("title", title);
+      formData.append("desc", desc);
+      formData.append("price", price);
+      formData.append("popular", popular);
+      formData.append("category", category);
+      formData.append("brand", brand);
+      formData.append("nibmaterial", nibmaterial);
+      formData.append("size", size);
+      formData.append("details", details);
+
+      formData.append("colors", JSON.stringify(colors));
+
+      image1 && formData.append("image1", image1)
+
+      const response = await axios.post(backendUrl + "/api/product/add", formData, {headers:{token}})
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
 
   return (
-    <form className='flex flex-col w-full items-start gap-3'>
+    <form onSubmit={onSubmitHandler} className='flex flex-col w-full items-start gap-3'>
       <p className='mb-2'>
         Загрузить изображение
       </p>

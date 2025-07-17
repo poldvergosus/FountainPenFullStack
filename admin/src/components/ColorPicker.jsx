@@ -51,14 +51,13 @@ const ColorPicker = ({ colors, setColors }) => {
           />
         )}
         {selected.includes(idx) && (
-          <span className="absolute right-0 bottom-0 bg-primary text-white rounded-full text-xs px-1" style={{fontSize: 12, lineHeight: 1}}>✓</span>
+          <span className="absolute right-0 bottom-0 bg-primary text-white rounded-full text-xs px-1" style={{ fontSize: 12, lineHeight: 1 }}>✓</span>
         )}
       </div>
       <span className="text-xs mt-1">{color.name}</span>
     </div>
   );
 
-  // Кружок с плюсом
   const renderAddCircle = () => (
     <div
       className="flex flex-col items-center cursor-pointer"
