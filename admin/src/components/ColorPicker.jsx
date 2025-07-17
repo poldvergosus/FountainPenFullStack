@@ -6,7 +6,6 @@ const ColorPicker = ({ colors, setColors }) => {
   const [newColor, setNewColor] = useState({ name: '', hex: '#000000' });
   const [selected, setSelected] = useState([]);
 
-  // Добавить новый цвет
   const handleAddColor = () => {
     if (!newColor.name.trim()) return;
     setColors([...colors, { ...newColor }]);
@@ -14,7 +13,6 @@ const ColorPicker = ({ colors, setColors }) => {
     setShowAdd(false);
   };
 
-  // Множественный выбор
   const handleSelect = (idx) => {
     setSelected(prev =>
       prev.includes(idx)
@@ -23,7 +21,6 @@ const ColorPicker = ({ colors, setColors }) => {
     );
   };
 
-  // Рендер кружка цвета
   const renderColorCircle = (color, idx) => (
     <div
       key={idx}
