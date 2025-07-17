@@ -3,6 +3,7 @@ import { assets } from '../assets/assets'
 import ColorPicker from '../components/ColorPicker.jsx'
 import axios from 'axios'
 import { backendUrl } from '../App'
+import { toast } from 'react-toastify'
 
 const Add = ({ token }) => {
 
@@ -45,13 +46,29 @@ const Add = ({ token }) => {
 
       image1 && formData.append("image1", image1)
 
-      const response = await axios.post(backendUrl + "/api/product/add", formData, {headers:{token}})
-      console.log(response.data);
+      const response = await axios.post(backendUrl + "/api/product/add", formData, { headers: { token } })
+      if (response.data.success) {
+        toast.success("Товар успешно добавлен!")
+
+        setTitle('')
+        setDesc('')
+        setImage(null)
+        setPrice('')
+        setPopular(false)
+        setCategory('Перьевые ручки')
+        setBrand('')
+        setNibmaterial(false)
+        setSize('EF')
+        setColors(PRESET_COLORS)
+        setDetails('')
+      } else {
+        toast.error(response.data.message)
+      }
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      toast.error(error.message);
     }
   }
-
 
   return (
     <form onSubmit={onSubmitHandler} className='flex flex-col w-full items-start gap-3'>

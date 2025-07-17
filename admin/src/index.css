@@ -4,27 +4,29 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
+* {
     font-family: Literata;
-
 }
 
 
 
-select,input,textarea{
-    border: 2 px solid #214784 ;
-    outline-color: #7991B8 ;
+select,
+input,
+textarea {
+    border: 2 px solid #214784;
+    outline-color: #7991B8;
     border-radius: 2px;
-    background:#F3F7FF;
+    background: #F3F7FF;
 }
 
 
-.active{
-    background-color: #ffebf5 ;
-    border-color: #C586A5;
+.active {
+    background-color: #7991B8;;
+    border-color: #214784;
+    color: white; 
 }
 
 :root {
-  --color-primary: #214784;
-  --color-accent: #B1740F;
+    --color-primary: #214784;
+    --color-accent: #B1740F;
 }
