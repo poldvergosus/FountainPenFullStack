@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { assets } from '../assets/assets'
 import ColorPicker from '../components/ColorPicker.jsx'
 import axios from 'axios'
@@ -24,7 +24,16 @@ const Add = ({ token }) => {
   const [brand, setBrand] = useState("")
   const [nibmaterial, setNibmaterial] = useState(false)
   const [size, setSize] = useState("EF")
-  const [colors, setColors] = useState(PRESET_COLORS);
+  const [colors, setColors] = useState(() => {
+    const saved = localStorage.getItem('colors');
+    return saved ? JSON.parse(saved) : PRESET_COLORS;
+  })
+  const [selectedColors, setSelectedColors] = useState([]);;
+
+  useEffect(() => {
+    localStorage.setItem('colors', JSON.stringify(colors));
+  }, [colors]);
+
   const [details, setDetails] = useState("")
 
   const onSubmitHandler = async (e) => {
@@ -42,7 +51,7 @@ const Add = ({ token }) => {
       formData.append("size", size);
       formData.append("details", details);
 
-      formData.append("colors", JSON.stringify(colors));
+      formData.append("colors",   JSON.stringify(selectedColors.map(idx => colors[idx])));
 
       image1 && formData.append("image1", image1)
 
@@ -170,7 +179,8 @@ const Add = ({ token }) => {
           </div>
         </div>
       </div>
-      <ColorPicker colors={colors} setColors={setColors} />
+      <ColorPicker colors={colors} setColors={setColors} selected={selectedColors}
+        setSelected={setSelectedColors} />
       <button type='submit' className='w-28 py-3 mt-4 text-white bg-primary'>Добавить</button>
     </form>
   )

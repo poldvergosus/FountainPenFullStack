@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 
-const ColorPicker = ({ colors, setColors }) => {
+const ColorPicker = ({ colors, setColors,selected, setSelected  }) => {
   const [showAdd, setShowAdd] = useState(false);
   const [newColor, setNewColor] = useState({ name: '', hex: '#000000' });
-  const [selected, setSelected] = useState([]);
+
 
   const handleAddColor = () => {
     if (!newColor.name.trim()) return;
