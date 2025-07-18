@@ -305,7 +305,7 @@ export const products = [
     image: "/images/prd13.jpg",
     title: "Sailor Fude de Mannen",
     desc: "Green (fude 55°)",
-    price: 21980,
+    price: 2900,
     popular: false,
     category: "перьевые ручки",
     brand: "Sailor",

@@ -15,13 +15,26 @@ const Add = ({ token }) => {
     { name: "Прозрачный", hex: "transparent", isTransparent: true }
   ];
 
+  const BRANDS = [
+    { value: "Kaweco", label: "Kaweco" },
+    { value: "Lamy", label: "Lamy" },
+    { value: "Sailor", label: "Sailor" },
+    { value: "TWSBI", label: "TWSBI" },
+    { value: "Platinum", label: "Platinum" },
+    { value: "Pilot", label: "Pilot" },
+    { value: "Visconti", label: "Visconti" },
+    { value: "Parker", label: "Parker" },
+    { value: "Diplomat", label: "Diplomat" }
+  ];
+
+
   const [image1, setImage] = useState(null)
   const [title, setTitle] = useState("")
   const [desc, setDesc] = useState("")
   const [price, setPrice] = useState("")
   const [popular, setPopular] = useState(false)
   const [category, setCategory] = useState("Перьевые ручки")
-  const [brand, setBrand] = useState("")
+  const [brand, setBrand] = useState(BRANDS[0].value)
   const [nibmaterial, setNibmaterial] = useState(false)
   const [size, setSize] = useState("EF")
   const [colors, setColors] = useState(() => {
@@ -51,11 +64,15 @@ const Add = ({ token }) => {
       formData.append("size", size);
       formData.append("details", details);
 
-      formData.append("colors",   JSON.stringify(selectedColors.map(idx => colors[idx])));
+      formData.append("colors", JSON.stringify(selectedColors.map(idx => colors[idx])));
 
       image1 && formData.append("image1", image1)
 
-      const response = await axios.post(backendUrl + "/api/product/add", formData, { headers: { token } })
+      const response = await axios.post(backendUrl + "/api/product/add", formData, {
+        headers: {
+          token
+        }
+      })
       if (response.data.success) {
         toast.success("Товар успешно добавлен!")
 
@@ -68,7 +85,6 @@ const Add = ({ token }) => {
         setBrand('')
         setNibmaterial(false)
         setSize('EF')
-        setColors(PRESET_COLORS)
         setDetails('')
       } else {
         toast.error(response.data.message)
@@ -87,7 +103,7 @@ const Add = ({ token }) => {
       <div className='flex gap-2'>
         <label htmlFor="image1">
           <img className='w-45' src={!image1 ? assets.upload_area : URL.createObjectURL(image1)} alt="" />
-          <input onChange={(e) => setImage(e.target.files[0])} type="file" id='image1' hidden />
+          <input onChange={(e) => setImage(e.target.files[0])} type="file" id='image1' hidden required />
         </label>
       </div>
 
@@ -144,14 +160,17 @@ const Add = ({ token }) => {
             <option value="M">Medium</option>
             <option value="MF">Medium Fine</option>
             <option value="B">Broad</option>
+            <option value="BB">Double Broad</option>
             <option value="Fude">Fude</option>
           </select>
         </div>
       </div>
 
-      <div className='w-full'>
+      <div >
         <p className='mb-2'>Бренд</p>
-        <input onChange={(e) => setBrand(e.target.value)} value={brand} className='w-full max-w-[500px] px-3 py-2' type="text" placeholder='Kaweco' required />
+        <select onChange={(e) => setBrand(e.target.value)} value={brand} className='w-full px-3 py-2'>
+          {BRANDS.map(item => <option key={item.value} value={item.value}>{item.label}</option>)}
+        </select>
       </div>
 
       <div className='w-full'>
@@ -159,26 +178,6 @@ const Add = ({ token }) => {
         <textarea onChange={(e) => setDetails(e.target.value)} value={details} className='w-full max-w-[500px] px-3 py-2' type="text" placeholder='Истоия производства, сведения о производителе' required />
       </div>
 
-      <div className='mb-2'>
-        <p className='mb-2'>Размеры пера</p>
-        <div className='flex gap-3'>
-          <div className='border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center w-8 h-8'>
-            <p>EF</p>
-          </div>
-
-          <div className='border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center w-8 h-8'>
-            <p>F</p>
-          </div>
-
-          <div className='border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center w-8 h-8'>
-            <p>MF</p>
-          </div>
-
-          <div className='border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center w-8 h-8'>
-            <p>M</p>
-          </div>
-        </div>
-      </div>
       <ColorPicker colors={colors} setColors={setColors} selected={selectedColors}
         setSelected={setSelectedColors} />
       <button type='submit' className='w-28 py-3 mt-4 text-white bg-primary'>Добавить</button>
