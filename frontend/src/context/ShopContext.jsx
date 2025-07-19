@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
-import { products } from "../assets/assets";
+// import { products } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 export const ShopContext = createContext();
 
@@ -11,6 +12,7 @@ const ShopContextProvider = (props) => {
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
 
   const addToCart = async (itemId) => {
     let cartData = structuredClone(cartItems);
@@ -39,23 +41,37 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
   }
 
-const getCartAmount = () => {
-  let totalAmount = 0;
+  const getCartAmount = () => {
+    let totalAmount = 0;
 
-  for (const itemId in cartItems) {
-    const quantity = cartItems[itemId];
-    if (quantity > 0) {
-      const itemInfo = products.find(
-        (product) => product.id.toString() === itemId.toString()
-      );
-      if (itemInfo) {
-        totalAmount += itemInfo.price * quantity;
+    for (const itemId in cartItems) {
+      const quantity = cartItems[itemId];
+      if (quantity > 0) {
+        const itemInfo = products.find(
+          (product) => product._id.toString() === itemId.toString()
+        );
+        if (itemInfo) {
+          totalAmount += itemInfo.price * quantity;
+        }
       }
     }
-  }
-  return totalAmount;
-};
+    return totalAmount;
+  };
 
+  const getProductsData = async () => {
+    try {
+      console.log(backendUrl)
+      const response = await axios.get(backendUrl + '/api/product/list')
+      console.log(response.data)
+      console.log(response.status, response.data);
+    } catch (error) {
+    console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getProductsData()
+  }, [])
 
   const value = {
     products, currency,
