@@ -13,6 +13,7 @@ import Navbar from './components/Navbar'
 import Blog from './pages/Blog'
 import Footer from './components/Footer'
 import SearchBar from './components/SearchBar'
+import NotFound from './pages/NotFound'
 
 const App = () => {
     return (
@@ -30,6 +31,8 @@ const App = () => {
                 <Route path='/place-order' element={<PlaceOrder/>}/>
                 <Route path='/orders' element={<Orders/>}/>
                 <Route path='/blog' element={<Blog/>}/>
+                <Route path='*' element={<NotFound />} />
+                <Route path='/collection/:brandName' element={<Collection/>}/>
             </Routes>
             <Footer/>
         </div>

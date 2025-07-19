@@ -13,7 +13,7 @@ const Cart = () => {
     for (const items in cartItems) {
       if (cartItems[items] > 0) {
         tempData.push({
-          id: items,
+          _id: items,
           quantity: cartItems[items]
         })
       }
@@ -30,7 +30,7 @@ const Cart = () => {
         {
           cartData.map((item, index) => {
             const productData = products.find(
-              (product) => product.id.toString() === item.id.toString()
+              (product) => product._id.toString() === item._id.toString()
             );
             return (
               <div key={index} className='py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_05fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'>
@@ -46,11 +46,11 @@ const Cart = () => {
                 <input onChange={(e) => {
                   const value = Number(e.target.value);
                   if (value >= 1) {
-                    updateQuantity(item.id, value);
+                    updateQuantity(item._id, value);
                   }
                 }} className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1' type="number" min={1} defaultValue={item.quantity} />
                 <div className="flex justify-end">
-                  <svg onClick={() => updateQuantity(item.id, 0)}
+                  <svg onClick={() => updateQuantity(item._id, 0)}
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-4 h-4 cursor-pointer text-primary hover:text-accent transition"
                     fill="none"

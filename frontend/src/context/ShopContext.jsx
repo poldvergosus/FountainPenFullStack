@@ -2,6 +2,8 @@ import { createContext, useEffect, useState } from "react";
 // import { products } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { toast } from 'react-toastify'
+
 
 export const ShopContext = createContext();
 
@@ -19,11 +21,9 @@ const ShopContextProvider = (props) => {
     if (cartData[itemId]) {
       cartData[itemId] += 1;
     }
-
     else {
       cartData[itemId] = 1
     }
-
     setCartItems(cartData);
   }
 
@@ -62,10 +62,16 @@ const ShopContextProvider = (props) => {
     try {
       console.log(backendUrl)
       const response = await axios.get(backendUrl + '/api/product/list')
-      console.log(response.data)
-      console.log(response.status, response.data);
+      if (response.data.success) {
+        setProducts(response.data.products)
+        console.log(response.data)
+      }
+      else {
+        toast.error(response.data.message)
+      }
     } catch (error) {
-    console.log(error)
+      console.log(error)
+      toast.error(error.message)
     }
   }
 

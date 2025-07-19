@@ -5,7 +5,7 @@ import noUiSlider from 'nouislider';
 import 'nouislider/dist/nouislider.css';
 import './Collection.css';
 import { Disclosure } from '@headlessui/react'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 
 const Collection = () => {
@@ -24,7 +24,8 @@ const Collection = () => {
   // =========================
   //  ДАННЫЕ ПРОДУКТОВ
   // =========================
-  const { products, search, showSearch } = useContext(ShopContext);
+  const { products = [] } = useContext(ShopContext) || {};
+  const { search, showSearch } = useContext(ShopContext);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const querySearch = queryParams.get('q')?.toLowerCase() || "";
@@ -34,10 +35,15 @@ const Collection = () => {
   const minPrice = prices.length ? Math.min(...prices) : 0;
   const maxPrice = prices.length ? Math.max(...prices) : 100000;
   const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
+  const { brandName } = useParams();
 
   //  Массивы фильтров (бренды, размеры, цвета)
-  const allBrands = [...new Set(products.map(p => p.brand).filter(Boolean))];
-  const allSizes = [...new Set(products.map(p => p.size).filter(Boolean))];
+  const allBrands = useMemo(() => {
+    return [...new Set(products.map(p => p.brand).filter(Boolean))];
+  }, [products]);
+  const allSizes = useMemo(() => {
+    return [...new Set(products.map(p => p.size).filter(Boolean))];
+  }, [products]);
 
   const allColors = useMemo(() => {
     return products
@@ -124,6 +130,20 @@ const Collection = () => {
   const sliderRef = useRef(null);
   const minInputRef = useRef(null);
   const maxInputRef = useRef(null);
+
+  useEffect(() => {
+    if (brandName) {
+      const actualBrand = allBrands.find(b => b.toLowerCase() === brandName.toLowerCase());
+
+      if (actualBrand) {
+        setSelectedBrands([actualBrand]);
+      } else {
+        setSelectedBrands([]);
+      }
+    } else {
+      setSelectedBrands([]);
+    }
+  }, [brandName, allBrands]);
 
   useEffect(() => {
     const el = sliderRef.current;

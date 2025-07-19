@@ -3,7 +3,19 @@ import { ShopContext } from "../context/ShopContext";
 import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
-  const { search, setSearch, showSearch, setShowSearch, products } = useContext(ShopContext);
+  const {
+  search,
+  setSearch,
+  showSearch,
+  setShowSearch,
+  products = [],
+} = useContext(ShopContext) || {};
+
+
+
+
+
+
   const navigate = useNavigate();
 
   const searchWords = search.toLowerCase().split(" ").filter(Boolean);

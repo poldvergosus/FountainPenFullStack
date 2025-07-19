@@ -9,12 +9,16 @@ import { ShopContext } from "../context/ShopContext";
 
 const PopularSlider = () => {
   
-  const {products, currency} = useContext(ShopContext);
-  const [popularProducts, setPopularProducts] = useState([]);
+  const { products = [], currency } = useContext(ShopContext) || {};
+  const popularProducts = products.filter(product => product.popular);
 
-  useEffect(() => {
-    setPopularProducts(products.filter(product => product.popular === true));
-  }, [products])
+//   useEffect(() => {
+//   if (Array.isArray(products)) {
+//     setPopularProducts(products.filter(product => product.popular === true));
+//   } else {
+//     setPopularProducts([]); 
+//   }
+// }, [products]);
   
   return (
     <section
