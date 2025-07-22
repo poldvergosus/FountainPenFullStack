@@ -3,9 +3,9 @@ import React, { useContext } from 'react'
 import { ShopContext } from "../context/ShopContext";
 import { Link } from 'react-router-dom';
 
-const ProductGrid = ({ title, products = [], columns = 3 }) => { 
+const ProductGrid = ({ title, products = [], columns = 3 }) => {
   const { currency } = useContext(ShopContext);
-const responsiveGridClass = `
+  const responsiveGridClass = `
   grid-cols-2 
   lg:grid-cols-2 
   xl:grid-cols-3 
@@ -24,7 +24,7 @@ const responsiveGridClass = `
       <div className={clsx('grid gap-3', responsiveGridClass)}>
         {products.map((product, index) => (
           <Link
-  to={`/product/${product._id}`} 
+            to={`/product/${product._id}`}
             key={index}
             className="border-[4px] border-primary p-[0.2rem] w-full h-full flex flex-col">
             <div className="border-[2px] border-primary p-4 flex flex-col flex-grow relative">

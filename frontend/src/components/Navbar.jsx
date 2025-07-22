@@ -1,18 +1,19 @@
 import React, { useContext, useEffect } from "react";
 import "./navbar.css";
-import { assets } from "../assets/assets"; 
+import { assets } from "../assets/assets.jsx";
 import { NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
 
-const {setShowSearch, getCartCount, navigate, token, setToken, setCartItems} =useContext(ShopContext);
-const logout = () =>{
-  localStorage.removeItem()
-  setToken('')
-  setCartItems({})
-  navigate('/login')
-}
+  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
+  const logout = () => {
+    navigate('/login')
+    localStorage.removeItem('token')
+    setToken('')
+    setCartItems({})
+    
+  }
 
   useEffect(() => {
     // Для кнопки поиска
@@ -27,6 +28,8 @@ const logout = () =>{
       `url(${assets.ui.cartSprite})`
     );
   }, []);
+
+  console.log('LOGIN CLOSED URL:', assets.login_closed);
 
   return (
     <>
@@ -87,13 +90,18 @@ const logout = () =>{
 
         {/* Кнопки справа */}
         <div className="main-actions">
-          <button onClick={()=>setShowSearch(prev => !prev)} className="search-button" aria-label="Поиск"></button>
-          <NavLink to="/login">
-            <div className="auth-button">
-              <span>
-                Логин
-                Регистрация
-              </span>
+          <button onClick={() => setShowSearch(prev => !prev)} className="search-button" aria-label="Поиск"></button>
+          <NavLink to="/login" className="group relative">
+            <div className="flex flex-col items-center justify-end w-[100px] h-[100%] text-primary ml-[30px] mr-[30px]">
+              <img src={assets.login_closed} alt="Логин" className="w-[65px] h-[65px] m-3" />
+              <span className="text-sm leading-[18px] font-semibold ">Войти</span>
+              <div className="group-hover:block hidden absolute dropdown-menu right-0 top-full  pt-4">
+                <div className=" flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100">
+                  <p className=" cursor-pointer hover:text-accent">Профиль</p>
+                  <p className=" cursor-pointer hover:text-accent">Заказы</p>
+                  <p onClick={logout} className=" cursor-pointer hover:text-accent">Выйти</p>
+                </div>
+              </div>
             </div>
           </NavLink>
 
