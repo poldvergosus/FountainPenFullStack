@@ -6,7 +6,13 @@ import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
 
-const {setShowSearch, getCartCount} =useContext(ShopContext);
+const {setShowSearch, getCartCount, navigate, token, setToken, setCartItems} =useContext(ShopContext);
+const logout = () =>{
+  localStorage.removeItem()
+  setToken('')
+  setCartItems({})
+  navigate('/login')
+}
 
   useEffect(() => {
     // Для кнопки поиска
@@ -86,7 +92,6 @@ const {setShowSearch, getCartCount} =useContext(ShopContext);
             <div className="auth-button">
               <span>
                 Логин
-                <br />/ <br />
                 Регистрация
               </span>
             </div>

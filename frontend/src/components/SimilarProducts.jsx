@@ -37,7 +37,6 @@ const SimilarProducts = ({ category, subCategory }) => {
         spaceBetween={16}
         loop
         navigation
-         
         
         breakpoints={{
           0: { slidesPerView: 1 },
