@@ -12,14 +12,6 @@ const PopularSlider = () => {
   const { products = [], currency } = useContext(ShopContext) || {};
   const popularProducts = products.filter(product => product.popular);
 
-//   useEffect(() => {
-//   if (Array.isArray(products)) {
-//     setPopularProducts(products.filter(product => product.popular === true));
-//   } else {
-//     setPopularProducts([]); 
-//   }
-// }, [products]);
-  
   return (
     <section
       className="-my-8 w-full"

@@ -21,6 +21,15 @@ const Cart = () => {
     setCartData(tempData);
   }, [cartItems])
 
+  if (cartData.length === 0) {
+    return (
+ <div className="mx-auto max-w-5xl p-10 text-center">
+        <h2 className="text-2xl font-bold text-primary">Ваша корзина пуста</h2>
+        <p className="mt-4 text-primary">Добавьте товары в корзину, чтобы оформить заказ.</p>
+      </div>
+    );
+  }
+
   return (
     <div className='mx-auto max-w-5xl border-t pt-14 p-4'>
       <div className='text-2x1 mb-3'>
@@ -70,7 +79,7 @@ const Cart = () => {
         <div className='w-full sm:w-[450px]'>
           <CartTotal />
           <div className='w-full text-end'>
-            <button onClick={()=> navigate('/place-order')}className='bg-primary text-white text-sm my-8 px-8 py-3 hover:bg-accent transition'>
+            <button onClick={() => navigate('/place-order')} className='bg-primary text-white text-sm my-8 px-8 py-3 hover:bg-accent transition'>
               Заказать
             </button>
           </div>
