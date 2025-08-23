@@ -11,11 +11,6 @@ const SearchBar = () => {
   products = [],
 } = useContext(ShopContext) || {};
 
-
-
-
-
-
   const navigate = useNavigate();
 
   const searchWords = search.toLowerCase().split(" ").filter(Boolean);
@@ -41,7 +36,6 @@ const SearchBar = () => {
     e.preventDefault();
     navigate(`/collection?q=${encodeURIComponent(search)}`);
   };
-
 
   return showSearch ? (
     <div className='text-center sticky top-0 z-50'>

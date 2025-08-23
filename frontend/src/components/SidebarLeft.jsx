@@ -23,12 +23,15 @@ const blogData = [
 
 const SidebarTop = () => {
   return (
-    <aside className=" flex flex-col justify-start
-    h-[48%]
+    <aside className="
+    hidden 2xl:flex flex-col justify-start
     px-[1.2rem] py-4
     bg-secondary text-primary
     border-t-[3px] border-r-[3px] border-primary
-    flex-[0_0_23%]">
+
+    grow-0 shrink-0
+    basis-[clamp(200px,24vw,260px)]
+    self-start">
       <img
         src={assets.blogLogo}
         alt="Блог логотип"

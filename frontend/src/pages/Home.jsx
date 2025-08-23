@@ -13,14 +13,13 @@ const Home = () => {
     <div>
       <Hero />
       <InfiniteScroll />
-
-<div className="w-[50%] max-w-[1690px] mx-auto">
-        <div className="flex gap-[4rem] justify-center my-8">
+      <div className="max-w-[1690px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="my-8 flex flex-col 2xl:flex-row items-stretch gap-8 2xl:gap-16">
           <SidebarLeft />
-          <div className="flex flex-col gap-3 flex-[1_1_60%] max-w-full">
+          <div className="flex flex-col gap-3 flex-1 min-w-0">
             <PopularSlider />
             <CategorySection />
-            <NewSection/>
+            <NewSection />
           </div>
           <SidebarRight />
         </div>

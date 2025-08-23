@@ -3,16 +3,24 @@ import { assets } from "../assets/assets";
 
 const SidebarRight = () => {
   return (
-    <aside className="flex flex-col justify-start
-    h-[48%]
-    px-[1.2rem] py-4
-    bg-secondary text-primary
-    border-t-[3px] border-r-[3px] border-primary
-    flex-[0_0_23%]">
+    <aside className="
+         order-last w-full basis-full mt-8 px-6 py-6
+        bg-secondary text-primary
+        border-t-[3px] border-primary
+        flex flex-col justify-start
+
+        /* с 2xl: обычный сайдбар справа */
+        2xl:order-none
+        2xl:w-auto 2xl:px-[1.2rem] 2xl:py-4 2xl:mt-0
+        2xl:border-r-[3px]
+        2xl:grow-0 2xl:shrink-0 2xl:basis-[clamp(200px,24vw,260px)]
+        2xl:self-start
+">
       <img
         src={assets.newsletterLogo}
         alt="Подписка"
-        className="w-full pb-4 px-4"
+        className="hidden 2xl:block w-full pb-4"
+        loading="lazy"
       />
       <div className="card-info-container mb-4">
         <h3 className="font-literata text-primary text-xl mb-2">

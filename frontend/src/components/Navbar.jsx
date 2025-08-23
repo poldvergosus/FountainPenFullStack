@@ -6,7 +6,7 @@ import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
 
-  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
+  const { currency, setShowSearch,getCartAmount, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
   const logout = () => {
     navigate('/login')
     localStorage.removeItem('token')
@@ -28,6 +28,7 @@ const Navbar = () => {
     );
   }, []);
 
+  const subtotal = getCartAmount(); 
   return (
     <>
       <header className="relative py-5 max-w-[1700px] mx-auto">
@@ -108,7 +109,7 @@ const Navbar = () => {
                 <div className="cart-icon">
                   <span className="cart-count">{getCartCount()}</span>
                 </div>
-                <div className="cart-price">1200 р.</div>
+                <div className="cart-price"><p>{subtotal} {currency}</p></div>
               </div>
             </NavLink>
           </div>
