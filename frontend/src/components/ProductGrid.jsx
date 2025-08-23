@@ -1,15 +1,26 @@
 import clsx from 'clsx'
 import React, { useContext } from 'react'
 import { ShopContext } from "../context/ShopContext";
-import { Link } from 'react-router-dom';
+import { Link,useNavigate  } from 'react-router-dom';
 
-const ProductGrid = ({ title, products = [], columns = 3 }) => {
+const ProductGrid = ({ title, products = [], onSizeClick, columns = 3 }) => {
   const { currency } = useContext(ShopContext);
+  const navigate = useNavigate();
   const responsiveGridClass = `
   grid-cols-2 
   lg:grid-cols-2 
   xl:grid-cols-3 
 `;
+
+ const handleSizeClick = (e, size) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onSizeClick) {
+      onSizeClick(size);
+    } else {
+      navigate(`/collection?size=${encodeURIComponent(size)}`);
+    }
+  };
 
   return (
     <section className="mt-[2.5rem] -my-8 w-full">
@@ -30,7 +41,9 @@ const ProductGrid = ({ title, products = [], columns = 3 }) => {
             <div className="border-[2px] border-primary p-4 flex flex-col flex-grow relative">
 
               <span
-                className="absolute top-4 left-4 border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center"
+               role="button"
+                onClick={(e) => handleSizeClick(e, product.size)}
+                className="absolute top-4 left-4 border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center hover:bg-accent hover:text-white hover:border-accent transition"
                 style={{ width: '2.5rem', height: '1.8rem' }}
               >
                 {product.size}

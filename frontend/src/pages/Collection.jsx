@@ -5,7 +5,7 @@ import noUiSlider from 'nouislider';
 import 'nouislider/dist/nouislider.css';
 import './Collection.css';
 import { Disclosure } from '@headlessui/react'
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 
 const Collection = () => {
@@ -27,8 +27,10 @@ const Collection = () => {
   const { products = [] } = useContext(ShopContext) || {};
   const { search, showSearch } = useContext(ShopContext);
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const querySearch = queryParams.get('q')?.toLowerCase() || "";
+  const querySize = queryParams.get('size') || null;
 
   //  Ценовой диапазон
   const prices = products.map(p => Number(p.price)).filter(p => !isNaN(p));
@@ -144,6 +146,21 @@ const Collection = () => {
       setSelectedBrands([]);
     }
   }, [brandName, allBrands]);
+
+  useEffect(() => {
+    if (querySize) {
+      setSelectedSizes([querySize]);
+      setVisibleCount(12);
+    }
+  }, [querySize]);
+
+  const handleSizeFromCard = (size) => {
+    setSelectedSizes([size]);
+    setVisibleCount(12);
+    const qs = new URLSearchParams(location.search);
+    qs.set('size', size);
+    navigate({ pathname: location.pathname, search: qs.toString() }, { replace: false });
+  };
 
   useEffect(() => {
     const el = sliderRef.current;
@@ -405,7 +422,7 @@ const Collection = () => {
               Результаты поиска для: <span className="italic font-semibold">{querySearch}</span>
             </h2>
           )}
-          <ProductGrid products={filteredProducts.slice(0, visibleCount)} columns={3} />
+          <ProductGrid products={filteredProducts.slice(0, visibleCount)} columns={3} onSizeClick={handleSizeFromCard}/>
 
           {/* Показать ещё */}
           {visibleCount < filteredProducts.length && (
