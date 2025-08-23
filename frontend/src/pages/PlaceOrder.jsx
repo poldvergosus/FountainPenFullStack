@@ -12,26 +12,24 @@ const PlaceOrder = () => {
     <div className='mx-auto max-w-3xl flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
       <div className='flex flex-col gap-4 w-full sm:max-w-[480-px]'>
 
-        <div className='text-xl sm:text-2xl my-3'>
-          sdfsdf asdasd
+        <div className='text-xl sm:text-2xl my-3 text-primary'>
+          Оформение заказа
         </div>
 
         <div className='flex gap-3'>
-          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='Имя' />
-          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='Фамилия' />
+          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='ФИО' />
         </div>
-        <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="email" placeholder='Email' />
-        <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='Street' />
-        <div className='flex gap-3'>
-          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='Город' />
-          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='район' />
-        </div>
-
-        <div className='flex gap-3'>
-          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='Город' />
-          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='район' />
-        </div>
+        <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="email" placeholder='Email' /> 
         <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="number" placeholder='Телефон' />
+        <div className='flex gap-3'>
+          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='Город' />
+          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='Адрес' />
+        </div>
+
+        <div className='flex gap-3'>
+          <input className='border border-primary rounded py-1.5 px-3.5 w-full' type="text" placeholder='Комментарий' />
+        </div>
+       
       </div>
 
       <div className=' mt-8 '>
@@ -40,8 +38,8 @@ const PlaceOrder = () => {
         </div>
 
         <div className='mt-12'>
-          <div className='text-xl sm:text-2xl my-3'>
-            sdfsdf asdasd
+          <div className='text-xl sm:text-2xl my-3 text-primary'>
+          Способ оплаты
           </div>
           {/* PAYMENT SELECTION */}
           <div className='flex gap-3 flex-col lg:flex-row'></div>
@@ -59,7 +57,7 @@ const PlaceOrder = () => {
           </div>
         </div>
         <div className='w-full text-end mt-8'>
-          <button onClick={()=>navigate('/orders')} className='bg-primary text-white px-16 py-3 text-sm'> Place order</button>
+          <button onClick={()=>navigate('/orders')} className='bg-primary text-white px-16 py-3 text-sm'> Оформить заказ</button>
         </div>
       </div>
     </div>
