@@ -12,7 +12,6 @@ const Navbar = () => {
     localStorage.removeItem('token')
     setToken('')
     setCartItems({})
-    
   }
 
   useEffect(() => {
@@ -28,8 +27,6 @@ const Navbar = () => {
       `url(${assets.ui.cartSprite})`
     );
   }, []);
-
-  console.log('LOGIN CLOSED URL:', assets.login_closed);
 
   return (
     <>
