@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { Link } from "react-router-dom";
 
@@ -24,6 +24,16 @@ const brands = [
   { name: "atramentis", image: "/images/brand_19.png" },
 ];
 const InfiniteScroll = () => {
+  const [loaded, setLoaded] = useState(() => new Set());
+
+  const markLoaded = (name) => {
+    setLoaded((prev) => {
+      const next = new Set(prev);
+      next.add(name);
+      return next;
+    });
+  };
+
   return (
     <div className="overflow-hidden border-b-[2px] border-brand whitespace-nowrap group">
       {[0, 1].map((_, i) => (
@@ -32,19 +42,45 @@ const InfiniteScroll = () => {
           className="inline-block animate-slide will-change-transform group-hover:[animation-play-state:paused]"
         >
           <div className="flex h-[60px] items-stretch">
-            {brands.map((brand, index) => (
-              <Link
-                to={`/collection/${brand.name}`}
-                key={`${i}-${brand.name}`}
-                className="flex items-center px-[10px] border-r-[3px] border-brand h-full"
-              >
-                <img
-                  src={brand.image}
-                  alt={`Логотип ${brand.name}`}
-                  className="h-[50px] object-contain"
-                />
-              </Link>
-            ))}
+            {brands.map((brand) => {
+              const isLoaded = loaded.has(brand.name);
+              return (
+                <Link
+                  to={`/collection/${brand.name}`}
+                  key={`${i}-${brand.name}`}
+                  className="
+                  relative flex items-center justify-center
+                  h-full border-r-[3px] border-brand
+                  flex-none w-[120px] sm:w-[140px] md:w-[150px]
+                  px-2
+                    "
+                >
+                  {/* скелет пока не загрузилось */}
+                  {!isLoaded && (
+                    <div
+                      className="
+                      absolute inset-0 flex items-center justify-center
+                      h-[50px] w-[90%] rounded
+                      bg-gray-200 animate-pulse
+                    "
+                    />
+                  )}
+
+                  <img
+                    src={brand.image}
+                    alt={`Логотип ${brand.name}`}
+                    className={`
+                    h-[50px] w-full object-contain
+                    transition-opacity duration-500
+                    ${isLoaded ? 'opacity-100' : 'opacity-0'}
+                  `}
+                    onLoad={() => markLoaded(brand.name)}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </Link>
+              );
+            })}
           </div>
         </div>
       ))}
