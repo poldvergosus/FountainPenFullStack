@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
 import SimilarProducts from '../components/SimilarProducts';
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../utils/format';
 
 const Product = () => {
   const { productId } = useParams();
@@ -24,6 +25,10 @@ const Product = () => {
     }
   }, [productId, products]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [productId]);
+
   return productData ? (
     <div className=' pt-10 transition-opacity ease-in duration-500 opacity-100'>
       <div className='max-w-5xl mx-auto'>
@@ -38,8 +43,8 @@ const Product = () => {
             <div className='w-full'>
               <img src={image} alt={productData.title} className="w-ful border-4 border-primary " />
             </div>
-            <p className='text-3xl text-primary font-extrabold mt-4'>{productData.price} {currency} </p>
-            <button onClick={()=>addToCart(productData._id)} className='text-2xl mt-4 w-full bg-primary text-white font-bold py-3 hover:bg-accent transition'>В корзину</button>
+            <p className='text-3xl text-primary font-extrabold mt-4'>  {formatPrice(productData.price)} {currency}</p>
+            <button onClick={() => addToCart(productData._id)} className='text-2xl mt-4 w-full bg-primary text-white font-bold py-3 hover:bg-accent transition'>В корзину</button>
           </div>
 
           {/* Правая часть*/}
@@ -55,7 +60,6 @@ const Product = () => {
               </p>
             ))}
           </div>
-
         </div>
 
         {/* Заголовок секции */}
@@ -89,7 +93,11 @@ const Product = () => {
           </div>
         </div>
 
-<SimilarProducts  category={productData.category} subCategory={productData.brand}/>
+        <SimilarProducts
+          currentId={productData._id}
+          category={productData.category}
+          brand={productData.brand}
+          colorNames={(productData.colors || []).map(c => c.name ?? c)} />
       </div>
     </div>
   ) : <div className='opacity-0'></div>

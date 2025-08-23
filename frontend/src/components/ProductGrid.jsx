@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import React, { useContext } from 'react'
 import { ShopContext } from "../context/ShopContext";
 import { Link,useNavigate  } from 'react-router-dom';
+import { formatPrice } from '../utils/format';
 
 const ProductGrid = ({ title, products = [], onSizeClick, columns = 3 }) => {
   const { currency } = useContext(ShopContext);
@@ -62,7 +63,7 @@ const ProductGrid = ({ title, products = [], onSizeClick, columns = 3 }) => {
                   {product.desc}
                 </p>
                 <strong className="text-lg font-extrabold font-literata text-primary mt-3">
-                  {product.price} {currency}
+                {formatPrice(product.price)} {currency}
                 </strong>
               </div>
             </div>

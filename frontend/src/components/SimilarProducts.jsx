@@ -1,31 +1,71 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
-import { Link } from 'react-router-dom';
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "./slider.css";
-const SimilarProducts = ({ category, subCategory }) => {
+import { Link } from 'react-router-dom'
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Navigation } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/navigation"
+import "./slider.css"
+import { formatPrice } from '../utils/format';
 
-  const { products } = useContext(ShopContext);
+const SimilarProducts = ({
+  category,
+  brand,              
+  subCategory,
+   currentId,
+  colorNames = [],   
+  limit = 5
+}) => {
+  const { products, currency } = useContext(ShopContext);
   const [related, setRelated] = useState([]);
-  const { currency } = useContext(ShopContext);
+
+  const normColors = useMemo(() => new Set(
+    (colorNames || []).map(c => (c || '').toString().toLowerCase())
+  ), [colorNames]);
+
+  const effectiveBrand = brand ?? subCategory;
+
+  const hasCommonColor = (p) => {
+    const arr = Array.isArray(p.colors)
+      ? p.colors.map(c => (c?.name ?? c)?.toString().toLowerCase())
+      : (p.color ? [p.color.toString().toLowerCase()] : []);
+    return arr.some(name => normColors.has(name));
+  };
 
   useEffect(() => {
+    if (!products?.length) { setRelated([]); return; }
 
-    if (products.length > 0) {
-      let productsCopy = [...products];
+    const list = products.filter(p => p?._id?.toString() !== currentId?.toString());
 
-      productsCopy = productsCopy.filter(item => item.category === category);
-      productsCopy = productsCopy.filter(item => item.brand === subCategory);
+    const sameBrandAndCategory = list.filter(p =>
+      p.category === category && p.brand === effectiveBrand
+    );
 
-      const similar = productsCopy.slice(0, 5);
+    const sameColorInCategory = list.filter(p =>
+      p.category === category && normColors.size > 0 && hasCommonColor(p)
+    );
 
-      setRelated(similar);
-      console.log('Похожие товары:', similar);
-    }
-  }, [products, category, subCategory]);
+    const sameCategory = list.filter(p => p.category === category);
+    const seen = new Set();
+    const uniq = (arr) => arr.filter(p => {
+      const key = p?._id?.toString();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    const combined = uniq([
+      ...sameBrandAndCategory,
+      ...sameColorInCategory,
+      ...sameCategory,
+    ]).slice(0, limit);
+
+    setRelated(combined);
+  }, [products, category, effectiveBrand, normColors, currentId, limit]);
+
+  if (!related.length) return null;
+
+  const loopEnabled = related.length > 3;
 
   return (
     <section className="mt-16">
@@ -35,24 +75,22 @@ const SimilarProducts = ({ category, subCategory }) => {
         modules={[Navigation]}
         slidesPerView={3}
         spaceBetween={16}
-        loop
+        loop={loopEnabled}
         navigation
-
         breakpoints={{
-          0: { slidesPerView: 1 },
+          0:   { slidesPerView: 1 },
           640: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
+          1024:{ slidesPerView: 3 },
         }}
         className="overflow-hidden"
       >
-        {related.map((product, index) => (
-          <SwiperSlide key={index}>
+        {related.map((product) => (
+          <SwiperSlide key={product._id}>
             <Link
-              to={`/product/${product.id}`}
-              key={index}
-              className="border-[4px] border-primary p-[0.2rem] w-full h-full flex flex-col">
+              to={`/product/${product._id}`}
+              className="border-[4px] border-primary p-[0.2rem] w-full h-full flex flex-col"
+            >
               <div className="border-[2px] border-primary p-4 flex flex-col flex-grow relative">
-
                 <span
                   className="absolute top-4 left-4 border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center"
                   style={{ width: '2.5rem', height: '1.8rem' }}
@@ -60,11 +98,7 @@ const SimilarProducts = ({ category, subCategory }) => {
                   {product.size}
                 </span>
 
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="w-full mb-4 mt-7"
-                />
+                <img src={product.image} alt={product.title} className="w-full mb-4 mt-7" />
                 <div className="flex flex-col flex-grow">
                   <h3 className="font-literata font-semibold text-lg text-primary mb-1 line-clamp-2">
                     {product.title}
@@ -73,7 +107,7 @@ const SimilarProducts = ({ category, subCategory }) => {
                     {product.desc}
                   </p>
                   <strong className="text-lg font-extrabold font-literata text-primary mt-3">
-                    {product.price} {currency}
+                    {formatPrice(product.price)} {currency}
                   </strong>
                 </div>
               </div>
@@ -81,10 +115,6 @@ const SimilarProducts = ({ category, subCategory }) => {
           </SwiperSlide>
         ))}
       </Swiper>
-
-      {/* Настраиваемые стрелки */}
-      <div className="similar-button-prev absolute top-1/2 -left-4 z-10 w-8 h-8 bg-white border border-primary rounded-full flex items-center justify-center cursor-pointer text-primary" />
-      <div className="similar-button-next absolute top-1/2 -right-4 z-10 w-8 h-8 bg-white border border-primary rounded-full flex items-center justify-center cursor-pointer text-primary" />
     </section>
   )
 }

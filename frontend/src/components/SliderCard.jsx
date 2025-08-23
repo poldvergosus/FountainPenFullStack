@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
+import { formatPrice } from '../utils/format';
 
 const SliderCard = ({ image, title, desc, price, id }) => {
   const { currency, addToCart } = useContext(ShopContext);
@@ -20,7 +21,7 @@ const SliderCard = ({ image, title, desc, price, id }) => {
         </h3>
         <p className="text-sm font-normal font-literata text-primary">{desc}</p>
         <strong className="text-lg font-extrabold font-literata text-primary mt-2">
-          {price} {currency}
+          {formatPrice(price)} {currency}
         </strong>
       </div>
       <div className="ribbon">+Добавить</div>
