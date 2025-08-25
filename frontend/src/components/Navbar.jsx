@@ -89,19 +89,20 @@ const Navbar = () => {
         {/* Кнопки справа */}
         <div className="main-actions">
           <button onClick={() => setShowSearch(prev => !prev)} className="search-button" aria-label="Поиск"></button>
-          <NavLink to="/login" className="group relative">
+          
+          <div className="group relative">
             <div className="flex flex-col items-center justify-end w-[100px] h-[100%] text-primary ml-[30px] mr-[30px]">
-              <img src={assets.login_closed} alt="Логин" className="w-[65px] h-[65px] m-3" />
+              <img onClick={()=> token ? null : navigate('/login')} src={assets.login_closed} alt="Логин" className="cursor-pointer w-[65px] h-[65px] m-3" />
               <span className="text-sm leading-[18px] font-semibold ">Войти</span>
               {token && <div className="group-hover:block hidden absolute dropdown-menu right-0 top-full  pt-4">
                 <div className=" flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100">
                   <p className=" cursor-pointer hover:text-accent">Профиль</p>
-                  <p className=" cursor-pointer hover:text-accent">Заказы</p>
+                  <p onClick={()=>navigate('/orders')} className=" cursor-pointer hover:text-accent">Заказы</p>
                   <p onClick={logout} className=" cursor-pointer hover:text-accent">Выйти</p>
                 </div>
               </div>}
             </div>
-          </NavLink>
+          </div>
 
           <div className="cart-button-wrapper">
             <NavLink to="/cart">
