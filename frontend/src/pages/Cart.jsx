@@ -9,21 +9,24 @@ const Cart = () => {
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
-    const tempData = [];
-    for (const items in cartItems) {
-      if (cartItems[items] > 0) {
-        tempData.push({
-          _id: items,
-          quantity: cartItems[items]
-        })
+
+    if (products.length > 0) {
+      const tempData = [];
+      for (const items in cartItems) {
+        if (cartItems[items] > 0) {
+          tempData.push({
+            _id: items,
+            quantity: cartItems[items]
+          })
+        }
       }
+      setCartData(tempData);
     }
-    setCartData(tempData);
-  }, [cartItems])
+  }, [cartItems, products])
 
   if (cartData.length === 0) {
     return (
- <div className="mx-auto max-w-5xl p-10 text-center">
+      <div className="mx-auto max-w-5xl p-10 text-center">
         <h2 className="text-2xl font-bold text-primary">Ваша корзина пуста</h2>
         <p className="mt-4 text-primary">Добавьте товары в корзину, чтобы оформить заказ.</p>
       </div>

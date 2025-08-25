@@ -61,7 +61,7 @@ const InfiniteScroll = () => {
                       className="
                       absolute inset-0 flex items-center justify-center
                       h-[50px] w-[90%] rounded
-                      bg-gray-200 animate-pulse
+                      bg-white
                     "
                     />
                   )}
