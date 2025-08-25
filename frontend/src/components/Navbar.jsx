@@ -6,7 +6,7 @@ import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
 
-  const { currency, setShowSearch,getCartAmount, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
+  const { currency, setShowSearch, getCartAmount, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
   const logout = () => {
     navigate('/login')
     localStorage.removeItem('token')
@@ -28,7 +28,7 @@ const Navbar = () => {
     );
   }, []);
 
-  const subtotal = getCartAmount(); 
+  const subtotal = getCartAmount();
   return (
     <>
       <header className="relative py-5 max-w-[1700px] mx-auto">
@@ -93,13 +93,13 @@ const Navbar = () => {
             <div className="flex flex-col items-center justify-end w-[100px] h-[100%] text-primary ml-[30px] mr-[30px]">
               <img src={assets.login_closed} alt="Логин" className="w-[65px] h-[65px] m-3" />
               <span className="text-sm leading-[18px] font-semibold ">Войти</span>
-              <div className="group-hover:block hidden absolute dropdown-menu right-0 top-full  pt-4">
+              {token && <div className="group-hover:block hidden absolute dropdown-menu right-0 top-full  pt-4">
                 <div className=" flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100">
                   <p className=" cursor-pointer hover:text-accent">Профиль</p>
                   <p className=" cursor-pointer hover:text-accent">Заказы</p>
                   <p onClick={logout} className=" cursor-pointer hover:text-accent">Выйти</p>
                 </div>
-              </div>
+              </div>}
             </div>
           </NavLink>
 
