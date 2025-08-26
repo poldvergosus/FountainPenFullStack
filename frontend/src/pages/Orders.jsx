@@ -77,6 +77,11 @@ const Orders = () => {
                       {new Date(item.date).toLocaleDateString()}
                     </span>
                   </p>
+                  <p className='mt-2'>
+                    Оплата: <span className='text-primary'>
+                      {item.paymentMethod}
+                    </span>
+                  </p>
                 </div>
               </div>
               <div className='md:w-1/2 flex justify-between items-center'>
@@ -86,7 +91,7 @@ const Orders = () => {
                     {item.status}
                   </span>
                 </div>
-                <button className='border px-4 py-2 text-sm font-medium rounded-sm bg-primary hover:bg-accent text-white transition'>
+                <button onClick={loadOrderData} className='border px-4 py-2 text-sm font-medium rounded-sm bg-primary hover:bg-accent text-white transition'>
                   Отследить заказ
                 </button>
               </div>
