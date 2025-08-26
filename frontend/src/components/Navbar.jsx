@@ -3,6 +3,8 @@ import "./navbar.css";
 import { assets } from "../assets/assets.jsx";
 import { NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+import { formatPrice } from '../utils/format';
+
 
 const Navbar = () => {
 
@@ -110,7 +112,7 @@ const Navbar = () => {
                 <div className="cart-icon">
                   <span className="cart-count">{getCartCount()}</span>
                 </div>
-                <div className="cart-price"><p>{subtotal} {currency}</p></div>
+                <div className="cart-price"><p>{formatPrice(subtotal)} {currency}</p></div>
               </div>
             </NavLink>
           </div>
