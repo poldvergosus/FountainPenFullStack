@@ -1,57 +1,89 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
+import axios from 'axios';
 
 const Orders = () => {
-  const { cartItems, products, currency } = useContext(ShopContext);
+  const { backendUrl, token, currency } = useContext(ShopContext);
+  const [orderData, setorderData] = useState([]);
 
-  const cartEntries = Object.entries(cartItems); 
+  const loadOrderData = async () => {
+    try {
+      if (!token) return;
+
+      const response = await axios.post(
+        backendUrl + '/api/order/userorders',
+        {},
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        let allOrdersItem = [];
+
+        response.data.orders.forEach((order) => {
+          order.items.forEach((item) => {
+            
+            const newItem = {
+              ...item,
+              status: order.status,
+              payment: order.payment,
+              paymentMethod: order.paymentMethod,
+              date: order.date,
+            };
+            allOrdersItem.push(newItem);
+          });
+        });
+
+        setorderData(allOrdersItem.reverse());
+        console.log("Orders loaded:", allOrdersItem);
+      }
+    } catch (error) {
+      console.error("Failed to load orders:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadOrderData();
+  }, [token]);
 
   return (
     <div className='border-t pt-16 px-4 max-w-5xl mx-auto'>
       <h2 className='text-2xl font-bold mb-6 text-primary'>Ваши заказы</h2>
 
-      {cartEntries.length === 0 ? (
+      {orderData.length === 0 ? (
         <p>У вас пока нет заказов</p>
       ) : (
-        cartEntries.map(([itemId, quantity]) => {
-          const product = products.find(
-            (p) => p._id.toString() === itemId.toString()
-          );
-
-          if (!product) return null;
-
+        orderData.map((item, index) => {
           return (
             <div
-              key={itemId}
+              key={`${item._id}-${index}`}
               className='py-4 border-t border-b text-primary flex flex-col md:flex-row md:justify-between gap-4'
             >
-              {/* Левая часть */}
               <div className='flex items-start gap-6 text-sm'>
                 <img
                   className='w-16 sm:w-20'
-                  src={product.image}
-                  alt={product.title}
+                  src={item.image}
+                  alt={item.title}
                 />
                 <div>
-                  <p className='sm:text-base font-medium'>{product.title}</p>
+                  <p className='sm:text-base font-medium'>{item.title}</p>
                   <div className='flex items-center gap-3 mt-2 text-base text-primary'>
                     <p className='text-lg'>
-                      {product.price} {currency}
+                      {item.price} {currency}
                     </p>
-                    <p className='text-sm'>Кол-во: {quantity}</p>
+                    <p className='text-sm'>Кол-во: {item.quantity}</p>
                   </div>
                   <p className='mt-2'>
-                    Дата: <span className='text-primary'>21.03.2024</span>
+                    Дата: <span className='text-primary'>
+                      {new Date(item.date).toLocaleDateString()}
+                    </span>
                   </p>
                 </div>
               </div>
-
-              {/* Правая часть */}
               <div className='md:w-1/2 flex justify-between items-center'>
                 <div className='flex items-center gap-2'>
                   <span className='w-2 h-2 rounded-full bg-primary'></span>
                   <span className='text-sm md:text-base text-primary'>
-                    Готово к отправке
+                    {item.status}
                   </span>
                 </div>
                 <button className='border px-4 py-2 text-sm font-medium rounded-sm bg-primary hover:bg-accent text-white transition'>
