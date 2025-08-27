@@ -26,6 +26,19 @@ const Orders = ({ token }) => {
       toast.error(error.message)
     }
   }
+
+  const statusHandler = async (event, orderId) => {
+    try {
+      const response =  await axios.post(backendUrl + '/api/order/status', {orderId, status:event.target.value},{headers:{token}})
+      if (response.data.success){
+        await fetchAllOrders()
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(response.data.message)
+    }
+  }
+
   useEffect(() => {
     fetchAllOrders();
   }, [token])
@@ -74,13 +87,14 @@ const Orders = ({ token }) => {
           <p>{order.amount}{currency}</p>
 
           <select
+            onChange={(event)=>statusHandler(event, order._id)}
             className="border p-1 text-sm"
             defaultValue={order.status}
           >
-            <option value="OrderPlaced">Заказ сформирован</option>
-            <option value="PackingOrder">Собираем заказ</option>
-            <option value="ShippedOrder">Заказ в пути</option>
-            <option value="Delivered">Заказ доставлен</option>
+            <option value="Заказ сформирован">Заказ сформирован</option>
+            <option value="Собираем заказ">Собираем заказ</option>
+            <option value="Заказ в пути">Заказ в пути</option>
+            <option value="Заказ доставлен">Заказ доставлен</option>
           </select>
         </div>
       ))}
@@ -88,5 +102,6 @@ const Orders = ({ token }) => {
   </>
 )
 }
+
 
 export default Orders
