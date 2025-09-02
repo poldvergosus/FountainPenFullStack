@@ -44,11 +44,11 @@ const Product = () => {
         <div className='flex flex-col sm:flex-row gap-8 items-start'>
 
           {/* Левая часть*/}
-          <div className='flex flex-col w-full sm:w-1/2 m-5 md:m-0'>
+          <div className='flex flex-col w-full sm:w-1/2 m-0'>
             <div className='w-full'>
               <img src={image} alt={productData.title} className="w-ful border-4 border-primary " />
             </div>
-            <p className='text-3xl text-primary font-extrabold mt-4'>  {formatPrice(productData.price)} {currency}</p>
+            <p className='text-3xl text-primary font-extrabold mt-4 text-center'>  {formatPrice(productData.price)} {currency}</p>
             <button onClick={() => addToCart(productData._id)} className='text-2xl mt-4 w-full bg-primary text-white font-bold py-3 hover:bg-accent transition'>В корзину</button>
           </div>
 
