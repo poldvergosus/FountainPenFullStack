@@ -64,7 +64,7 @@ const Collection = () => {
     const filtered = products.filter((p) => {
       const price = Number(p.price);
       const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
-      const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(p.brand);
+      const matchesBrand = selectedBrands.length === 0 || selectedBrands.some(b => (p.brand || '').toLowerCase() === b.toLowerCase());
       const matchesSize = selectedSizes.length === 0 || selectedSizes.includes(p.size);
       const matchesColor =
         selectedColors.length === 0 ||
@@ -143,17 +143,12 @@ const Collection = () => {
 
   useEffect(() => {
     if (brandName) {
-      const actualBrand = allBrands.find(b => b.toLowerCase() === brandName.toLowerCase());
-
-      if (actualBrand) {
-        setSelectedBrands([actualBrand]);
-      } else {
-        setSelectedBrands([]);
-      }
+      setSelectedBrands([brandName]);
+      setVisibleCount(12);
     } else {
       setSelectedBrands([]);
     }
-  }, [brandName, allBrands]);
+  }, [brandName]);
 
   useEffect(() => {
     if (querySize) {
@@ -437,19 +432,41 @@ const Collection = () => {
               Результаты поиска для: <span className="italic font-semibold">{querySearch}</span>
             </h2>
           )}
-          <ProductGrid products={filteredProducts.slice(0, visibleCount)} columns={3} onSizeClick={handleSizeFromCard} />
+{filteredProducts.length > 0 ? (
+  <>
+    <ProductGrid
+      products={filteredProducts.slice(0, visibleCount)}
+      columns={3}
+      onSizeClick={handleSizeFromCard}
+    />
 
-          {/* Показать ещё */}
-          {visibleCount < filteredProducts.length && (
-            <div className="mt-12 text-center">
-              <button
-                onClick={loadMore}
-                className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white font-medium transition"
-              >
-                Показать еще
-              </button>
-            </div>
-          )}
+    {visibleCount < filteredProducts.length && (
+      <div className="mt-12 text-center">
+        <button
+          onClick={loadMore}
+          className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white font-medium transition"
+        >
+          Показать еще
+        </button>
+      </div>
+    )}
+  </>
+) : (
+  <div className="border-2 border-primary p-8 text-center text-primary">
+    <p className="text-lg md:text-xl font-semibold mb-3">
+      Товар не найден
+    </p>
+    <p className="text-sm md:text-base mb-6 opacity-80">
+      Попробуйте изменить фильтры или вернуться в каталог.
+    </p>
+    <button
+      onClick={() => navigate('/collection')}
+      className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white transition"
+    >
+      Перейти в каталог
+    </button>
+  </div>
+)}
         </div>
       </div>
     </div>
