@@ -27,7 +27,7 @@ const SidebarTop = () => {
     hidden 2xl:flex flex-col justify-start
     px-[1.2rem] py-4
     bg-secondary text-primary
-    border-t-[3px] border-r-[3px] border-primary
+    border-t-[3px] border-l-[3px] border-primary
 
     grow-0 shrink-0
     basis-[clamp(200px,24vw,260px)]
