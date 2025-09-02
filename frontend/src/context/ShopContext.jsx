@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 // import { products } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 
 
 export const ShopContext = createContext();
@@ -79,7 +79,6 @@ const ShopContextProvider = (props) => {
 
   const getProductsData = async () => {
     try {
-      console.log(backendUrl)
       const response = await axios.get(backendUrl + '/api/product/list')
       if (response.data.success) {
         setProducts(response.data.products)
