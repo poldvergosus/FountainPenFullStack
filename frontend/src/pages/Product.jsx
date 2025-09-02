@@ -44,7 +44,7 @@ const Product = () => {
         <div className='flex flex-col sm:flex-row gap-8 items-start'>
 
           {/* Левая часть*/}
-          <div className='flex flex-col w-full sm:w-1/2'>
+          <div className='flex flex-col w-full sm:w-1/2 m-5 md:m-0'>
             <div className='w-full'>
               <img src={image} alt={productData.title} className="w-ful border-4 border-primary " />
             </div>
@@ -55,7 +55,7 @@ const Product = () => {
           {/* Правая часть*/}
           <div className='flex-1'>
             {productData.details.split('\n\n').map((paragraph, index) => (
-              <p key={index} className='text-base text-primary mb-4'>
+              <p key={index} className='text-base text-primary mb-4 p-5 md:p-0'>
                 {paragraph.split('\n').map((line, lineIndex) => (
                   <React.Fragment key={lineIndex}>
                     {line}

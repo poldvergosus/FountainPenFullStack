@@ -74,12 +74,11 @@ const SimilarProducts = ({
       <Swiper
         modules={[Navigation]}
         slidesPerView={3}
-        spaceBetween={16}
+        spaceBetween={15}
         loop={loopEnabled}
         navigation
         breakpoints={{
-          0:   { slidesPerView: 1 },
-          640: { slidesPerView: 2 },
+          0:   { slidesPerView: 2 },
           1024:{ slidesPerView: 3 },
         }}
         className="overflow-hidden"
