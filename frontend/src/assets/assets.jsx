@@ -11,6 +11,7 @@ import background from "./images/footer.svg";
 import aboutus from "./images/about_us.jpg";
 import login_closed from "./images/login_closed.svg";
 import login_open from "./images/login_open.svg";
+import heroPen from "./images/heroPen.png";
 
 // Руки
 import handLeft from "./images/hand_left.svg";
@@ -31,6 +32,7 @@ export const assets = {
   blogLogo,
   heroPage,
   heroSvg,
+  heroPen,
   handLeft,
   handRight,
   newsletterLogo,
