@@ -109,21 +109,18 @@ const Navbar = () => {
           <div className="header-center">
             <div className="relative">
               <NavLink to="/">
-                <h1 className="font-literata italic font-extrabold text-[length:var(--font-size-h1)] leading-[var(--line-height-title)] text-center text-primary m-0" style={{
-                  fontSize: "clamp(14px, 4vw, 40px)",
-                  lineHeight: "clamp(18px, 5vw, 64px)"
-                }}>
+                <h1 className="font-literata italic font-extrabold text-[length:var(--font-size-h1)] leading-[var(--line-height-title)] text-center text-primary m-0">
                   ЧЕРНИЛЬНАЯ ЛАВКА
                 </h1>
                 <img
                   src={assets.logo}
                   alt="Логотип"
-                  className="absolute left-[101%] top-1/2 -translate-y-[65%] w-4 md:w-5 2xl:w-9 h-auto"
+                  className="absolute left-[101%] top-1/2 -translate-y-[65%] w-8 h-auto"
                 />
               </NavLink>
             </div>
 
-            <nav className="category-menu flex flex-row justify-center items-center gap-[0.9375rem] font-literata font-normal text-[length:var(--font-size-regular)] leading-6 text-center">
+             <nav className="category-menu flex flex-row justify-center items-center gap-[0.9375rem] font-literata font-normal text-[length:var(--font-size-regular)] leading-6 text-center">
               <NavLink to="/collection" className="text-primary hover:text-accent">Перьевые ручки</NavLink>
               <NavLink to="/collection" className="text-primary hover:text-accent">Чернила</NavLink>
               <NavLink to="/collection" className="text-primary hover:text-accent">Бумага</NavLink>
@@ -141,25 +138,15 @@ const Navbar = () => {
 
           <div className="group relative">
             <div className="flex flex-col items-center justify-end w-[100px] h-[100%] text-primary ml-[30px] mr-[30px]">
-              <img
-                onClick={() => token ? logout() : navigate('/login')}
-                src={assets.login_closed}
-                alt="Логин"
-                className="cursor-pointer w-[65px] h-[65px] m-3"
-              />
-              <span className="text-sm leading-[18px] font-semibold">
-                {token ? 'Выйти' : 'Войти'}
-              </span>
-
-              {token && (
-                <div className="group-hover:block hidden absolute dropdown-menu right-0 top-full pt-4">
-                  <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100">
-                    <p className="cursor-pointer hover:text-accent" onClick={() => navigate('/profile')}>Профиль</p>
-                    <p className="cursor-pointer hover:text-accent" onClick={() => navigate('/orders')}>Заказы</p>
-                    <p className="cursor-pointer hover:text-accent" onClick={logout}>Выйти</p>
-                  </div>
+              <img onClick={() => token ? null : navigate('/login')} src={assets.login_closed} alt="Логин" className="cursor-pointer w-[65px] h-[65px] m-3" />
+              <span className="text-sm leading-[18px] font-semibold ">Войти</span>
+              {token && <div className="group-hover:block hidden absolute dropdown-menu right-0 top-full  pt-4">
+                <div className=" flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100">
+                  <p className=" cursor-pointer hover:text-accent">Профиль</p>
+                  <p onClick={() => navigate('/orders')} className=" cursor-pointer hover:text-accent">Заказы</p>
+                  <p onClick={logout} className=" cursor-pointer hover:text-accent">Выйти</p>
                 </div>
-              )}
+              </div>}
             </div>
           </div>
 

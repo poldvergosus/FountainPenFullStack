@@ -1,19 +1,19 @@
 import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { formatPrice } from '../utils/format';
-import {Link } from "react-router-dom";
 
-const SliderCard = ({ image, title, desc, price, id, _id }) => {
-  const { currency } = useContext(ShopContext);
-  const pid = id ?? _id;
+const SliderCard = ({ image, title, desc, price, id }) => {
+  const { currency, addToCart } = useContext(ShopContext);
 
+  const handleAdd = () => {
+    if (addToCart && id !== undefined) {
+      addToCart(id);
+    } else {
+      console.warn("Функция addToCart не определена или не указан id товара.");
+    }
+  };
   return (
-    <Link
-      to={pid ? `/product/${_id}` : '#'}
-      className="relative product-card block w-[90%] p-4 m-4 bg-white cursor-pointer"
-      onClick={(e) => { if (!pid) e.preventDefault(); }}
-      aria-disabled={!pid}
-    >
+    <div className="relative product-card w-[90%] p-4 m-4 bg-white">
       <img src={image} alt={title} className="w-full p-0 m-0" />
       <div className="card-info-container flex flex-col gap-1">
         <h3 className="text-[clamp(0.875rem,2.5vw,1.125rem)] font-semibold font-literata text-primary">
@@ -24,7 +24,8 @@ const SliderCard = ({ image, title, desc, price, id, _id }) => {
           {formatPrice(price)} {currency}
         </strong>
       </div>
-    </Link>
+      <div className="ribbon">+Добавить</div>
+    </div>
   );
 };
 

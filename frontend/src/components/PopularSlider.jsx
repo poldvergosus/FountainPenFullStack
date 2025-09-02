@@ -8,7 +8,7 @@ import SliderCard from "./SliderCard";
 import { ShopContext } from "../context/ShopContext";
 
 const PopularSlider = () => {
-
+  
   const { products = [], currency } = useContext(ShopContext) || {};
   const popularProducts = products.filter(product => product.popular);
 
@@ -49,13 +49,13 @@ const PopularSlider = () => {
 
           {popularProducts.map((product, index) => (
             <SwiperSlide key={index}>
-              <SliderCard {...product} currency={currency} />
+              <SliderCard {...product}  currency={currency} />
             </SwiperSlide>
           ))}
         </Swiper>
         {/* Стрелки навигации */}
         <div className="swiper-button-prev absolute left-[-10px] z-20 w-10 h-10 text-primary" />
-        <div className="swiper-button-next absolute right-[-10px] z-20 w-10 h-10 text-primary" />
+<div className="swiper-button-next absolute right-[-10px] z-20 w-10 h-10 text-primary" />
       </div>
     </section>
   );

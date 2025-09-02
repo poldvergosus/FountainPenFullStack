@@ -432,41 +432,41 @@ const Collection = () => {
               Результаты поиска для: <span className="italic font-semibold">{querySearch}</span>
             </h2>
           )}
-          {filteredProducts.length > 0 ? (
-            <>
-              <ProductGrid
-                products={filteredProducts.slice(0, visibleCount)}
-                columns={3}
-                onSizeClick={handleSizeFromCard}
-              />
+{filteredProducts.length > 0 ? (
+  <>
+    <ProductGrid
+      products={filteredProducts.slice(0, visibleCount)}
+      columns={3}
+      onSizeClick={handleSizeFromCard}
+    />
 
-              {visibleCount < filteredProducts.length && (
-                <div className="mt-12 text-center">
-                  <button
-                    onClick={loadMore}
-                    className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white font-medium transition"
-                  >
-                    Показать еще
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="border-2 border-primary p-8 text-center text-primary">
-              <p className="text-lg md:text-xl font-semibold mb-3">
-                Товар не найден
-              </p>
-              <p className="text-sm md:text-base mb-6 opacity-80">
-                Попробуйте изменить фильтры или вернуться в каталог.
-              </p>
-              <button
-                onClick={() => navigate('/collection')}
-                className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white transition"
-              >
-                Перейти в каталог
-              </button>
-            </div>
-          )}
+    {visibleCount < filteredProducts.length && (
+      <div className="mt-12 text-center">
+        <button
+          onClick={loadMore}
+          className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white font-medium transition"
+        >
+          Показать еще
+        </button>
+      </div>
+    )}
+  </>
+) : (
+  <div className="border-2 border-primary p-8 text-center text-primary">
+    <p className="text-lg md:text-xl font-semibold mb-3">
+      Товар не найден
+    </p>
+    <p className="text-sm md:text-base mb-6 opacity-80">
+      Попробуйте изменить фильтры или вернуться в каталог.
+    </p>
+    <button
+      onClick={() => navigate('/collection')}
+      className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white transition"
+    >
+      Перейти в каталог
+    </button>
+  </div>
+)}
         </div>
       </div>
     </div>
