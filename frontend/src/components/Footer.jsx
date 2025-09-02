@@ -38,8 +38,7 @@ const Footer = () => {
                     alt="Перо"
                     className="
           w-[18px] h-auto
-          md:w-[32px] md:absolute md:left-[102%] md:top-[45%] md:-translate-y-[65%]
-        "
+          md:w-[32px] md:absolute md:left-[102%] md:top-[45%] md:-translate-y-[65%]"
                   />
                 </div>
               </div>

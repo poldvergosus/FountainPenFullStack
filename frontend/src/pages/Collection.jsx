@@ -31,6 +31,7 @@ const Collection = () => {
   const queryParams = new URLSearchParams(location.search);
   const querySearch = queryParams.get('q')?.toLowerCase() || "";
   const querySize = queryParams.get('size') || null;
+  const queryBrand = queryParams.get('brand') || null;
 
   //  Ценовой диапазон
   const prices = products.map(p => Number(p.price)).filter(p => !isNaN(p));
@@ -156,6 +157,27 @@ const Collection = () => {
       setVisibleCount(12);
     }
   }, [querySize]);
+
+  useEffect(() => {
+    if (!queryBrand) {
+      setSelectedBrands([]);
+      return;
+    }
+
+    const found = allBrands.find(
+      b => b.toLowerCase() === queryBrand.toLowerCase()
+    );
+
+    if (found) {
+      setSelectedBrands([found]);
+    } else {
+
+      setSelectedBrands([queryBrand]);
+    }
+
+    setVisibleCount(12);
+    setShowFilter(true);
+  }, [queryBrand, allBrands]);
 
   const handleSizeFromCard = (size) => {
     setSelectedSizes([size]);
@@ -332,7 +354,7 @@ const Collection = () => {
                       <label key={brand} className="flex items-center text-sm gap-2 cursor-pointer my-1 font-literata text-primary last:pb-4">
                         <input
                           type="checkbox"
-                          checked={selectedBrands.includes(brand)}
+                          checked={selectedBrands.some(s => String(s).toLowerCase() === String(brand).toLowerCase())}
                           onChange={() => handleBrandToggle(brand)}
                         />
                         {brand}
@@ -471,9 +493,6 @@ const Collection = () => {
       </div>
     </div>
   )
-
-
-
 }
 
 export default Collection

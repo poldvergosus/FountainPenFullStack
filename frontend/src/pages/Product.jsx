@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
 import SimilarProducts from '../components/SimilarProducts';
 import { Link } from 'react-router-dom';
@@ -11,6 +11,7 @@ const Product = () => {
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
   const { currency } = useContext(ShopContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const foundProduct = products.find(
@@ -28,6 +29,10 @@ const Product = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [productId]);
+
+  const handleFilterClick = (key, value) => {
+    navigate(`/collection?${key}=${encodeURIComponent(value)}`);
+  };
 
   return productData ? (
     <div className=' pt-10 transition-opacity ease-in duration-500 opacity-100'>
@@ -73,23 +78,39 @@ const Product = () => {
         <div className="max-w-5xl mx-auto w-full">
           <div className="bg-primary text-white w-full">
 
-            <div className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4  hover:bg-accent transition">
+            <div
+              onClick={() => handleFilterClick("brand", productData.brand)}
+              className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition"
+            >
               <span className="font-medium">Бренд</span>
               <span>{productData.brand}</span>
             </div>
-            <div className=" cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition">
+
+            <div
+              onClick={() => handleFilterClick("size", productData.size)}
+              className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition"
+            >
               <span className="font-medium">Размер пера</span>
               <span>{productData.size}</span>
             </div>
-            <div className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition">
+
+            <div
+              onClick={() =>
+                handleFilterClick("nibmaterial", productData.nibmaterial ? 'Золото' : 'Сталь')
+              }
+              className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition"
+            >
               <span className="font-medium">Материал пера</span>
               <span>{productData.nibmaterial ? 'Золото' : 'Сталь'}</span>
             </div>
-            <div className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition">
+
+            <div
+              onClick={() => handleFilterClick("category", productData.category)}
+              className="cursor-pointer flex justify-between py-4 border-b-2 border-white px-4 hover:bg-accent transition"
+            >
               <span className="font-medium">Категория</span>
               <span>{productData.category}</span>
             </div>
-
           </div>
         </div>
 

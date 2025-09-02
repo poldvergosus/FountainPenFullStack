@@ -39,7 +39,6 @@
 }
 
 /* Конкретные иконки */
-
 .icon-ink::before {
   background-image: url('/images/category1.webp');
   background-position: -198px 0;
