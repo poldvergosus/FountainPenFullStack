@@ -12,7 +12,7 @@ const placeOrder = async (req, res) => {
             const price = Number(it.price || 0);
             return sum + (price * qty);
         }, 0);
-        //const deliveryFee = Number(process.env.DELIVERY_FEE || 0);
+
         const amount = subtotal;
 
         const orderData = {
