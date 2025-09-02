@@ -3,7 +3,7 @@ import React from "react";
 const BlogCard = ({ image, title, date }) => {
   return (
     <a
-      href="#"
+      href="/*"
       className="group block border-t-4 border-primary transition-colors duration-300 group-hover:border-accent"
     >
       <div className="mb-2">
