@@ -1,17 +1,18 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { ShopContext } from "../context/ShopContext";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const SearchBar = () => {
   const {
-  search,
-  setSearch,
-  showSearch,
-  setShowSearch,
-  products = [],
-} = useContext(ShopContext) || {};
+    search,
+    setSearch,
+    showSearch,
+    setShowSearch,
+    products = [],
+  } = useContext(ShopContext) || {};
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const searchWords = search.toLowerCase().split(" ").filter(Boolean);
 
@@ -28,13 +29,22 @@ const SearchBar = () => {
 
   const handleSelectProduct = (title) => {
     setSearch(title);
+    setShowSearch(false);
     navigate(`/collection?q=${encodeURIComponent(title)}`);
+    setSearch('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    setShowSearch(false);
+    setSearch('');
+  }, [location.pathname]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    setShowSearch(false);
     navigate(`/collection?q=${encodeURIComponent(search)}`);
+    setSearch('');
   };
 
   return showSearch ? (
