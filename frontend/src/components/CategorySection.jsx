@@ -32,13 +32,11 @@ const CategorySection = () => {
 
       <div
         className="
-          category-container
-          grid place-items-center
-          grid-cols-2 sm:grid-cols-3
-          gap-6 sm:gap-8 lg:gap-12 xl:gap-14 2xl:gap-16
-          w-full max-w-[1100px] mx-auto px-2 sm:px-4
-          min-w-0
-        "
+    category-container
+    flex flex-wrap justify-center
+    gap-6 sm:gap-8 lg:gap-12 xl:gap-14 2xl:gap-16
+    w-full max-w-[1100px] mx-auto px-2 sm:px-4
+  "
       >
         {categories.map((cat, idx) => (
           <Link

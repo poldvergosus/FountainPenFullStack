@@ -14,6 +14,7 @@ import login_open from "./images/login_open.svg";
 import heroPen from "./images/heroPen.png";
 import octo from "./images/octo.svg";
 import diver from "./images/diver.svg";
+import cash from "./images/cash_pay.svg";
 
 // Руки
 import handLeft from "./images/hand_left.svg";
@@ -32,6 +33,7 @@ export const assets = {
   logo,
   diver,
   octo,
+  cash,
   footerLogo,
   blogLogo,
   heroPage,

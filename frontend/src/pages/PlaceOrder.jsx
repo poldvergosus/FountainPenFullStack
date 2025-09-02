@@ -105,17 +105,10 @@ const PlaceOrder = () => {
           </div>
           {/* PAYMENT SELECTION */}
           <div className='flex gap-3 flex-col lg:flex-row'></div>
-          <div onClick={() => setMethod('Test.pay')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
-            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'Test.pay' ? 'bg-primary' : ''}`}>   </p>
-            <img className='h-5 mx-4' src={assets.social.vkIcon} alt="" />
-          </div>
-          <div onClick={() => setMethod('vk.pay')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
-            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'vk.pay' ? 'bg-primary' : ''}`}></p>
-            <img className='h-5 mx-4' src={assets.social.vkIcon} alt="" />
-          </div>
           <div onClick={() => setMethod('cod')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
             <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'cod' ? 'bg-primary' : ''}`}></p>
-            <img className='h-5 mx-4' src={assets.social.vkIcon} alt="" />
+            <img className='h-5' src={assets.cash} alt="" />
+            <span className="text-primary">Оплата при получении</span>
           </div>
         </div>
         <div className='w-full text-end mt-8'>
