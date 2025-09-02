@@ -3,60 +3,90 @@ import { assets } from '../assets/assets'
 
 const About = () => {
   return (
-    <div >
-      <div className='text-2xl text-center pt-8 border-t'>
-        djffjfj
+    <div>
+      <div className="text-2xl text-center pt-8 border-t font-literata font-bold text-primary">
+        Об этом сайте
       </div>
-      <div className='max-w-6xl w-full mx-auto my-10 px-4 flex flex-col md:flex-row gap-8'>
+
+      <div className="max-w-6xl w-full mx-auto my-10 px-4 flex flex-col md:flex-row gap-8">
         <img
-          className='w-full max-w-[450px] md:w-[45%] object-cover'
+          className="w-full max-w-[450px] md:w-[45%] object-cover"
           src={assets.aboutus}
-          alt='О нас'
+          alt="О проекте: перьевые ручки и типографика"
         />
 
-        <div className='flex flex-col gap-6 text-primary md:w-[55%]'>
+        <div className="flex flex-col gap-6 text-primary md:w-[55%] leading-relaxed">
           <p>
-            Что такое Lorem Ipsum?
-
-            Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem Ipsum.
-            Почему он используется?
-
-            Давно выяснено, что при оценке дизайна и композиции читаемый текст мешает сосредоточиться. Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение шаблона, а также реальное распределение букв и пробелов в абзацах, которое не получается при простой дубликации "Здесь ваш текст.. Здесь ваш текст.. Здесь ваш текст.." Многие программы электронной вёрстки и редакторы HTML используют Lorem Ipsum в качестве текста по умолчанию, так что поиск по ключевым словам "lorem ipsum" сразу показывает, как много веб-страниц всё ещё дожидаются своего настоящего рождения. За прошедшие годы текст Lorem Ipsum получил много версий. Некоторые версии появились по ошибке, некоторые - намеренно (например, юмористические варианты).
-
-            Откуда он появился?
-
-            Многие думают, что Lorem Ipsum - взятый с потолка псевдо-латинский набор слов, но это не совсем так. Его корни уходят в один фрагмент классической латыни 45 года н.э., то есть более двух тысячелетий назад. Ричард МакКлинток, профессор латыни из колледжа Hampden-Sydney, штат Вирджиния, взял одно из самых странных слов в Lorem Ipsum, "consectetur", и занялся его поисками в классической латинской литературе. В результате он нашёл неоспоримый первоисточник Lorem Ipsum в разделах 1.10.32 и 1.10.33 книги "de Finibus Bonorum et Malorum" ("О пределах добра и зла"), написанной Цицероном в 45 году н.э. Этот трактат по теории этики был очень популярен в эпоху Возрождения. Первая строка Lorem Ipsum, "Lorem ipsum dolor sit amet..", происходит от одной из строк в разделе 1.10.32
-
-            Классический текст Lorem Ipsum, используемый с XVI века, приведён ниже. Также даны разделы 1.10.32 и 1.10.33 "de Finibus Bonorum et Malorum" Цицерона и их английский перевод, сделанный H. Rackham, 1914 год.
+            Я студентка последнего курса колледжа информационных технологий.
+            Лучше всего разрабатывать то, что любишь — а я люблю перьевые ручки.
+            Так сложилось, что я много и с удовольствием пишу от руки, поэтому решила
+            сделать личный проект именно на эту тему.
           </p>
-          <p>Да все так</p>
+
+          <p>
+            Визуально вдохновлялась газетной типографикой: строгая сетка, шрифты, небольшие акценты,
+            которые добавляют жизни, но не перегружают.
+            Самое трудное было найти баланс: хотелось «газетного» максимализма, но пришлось
+            жертвовать деталями ради мобильной версии. Первый вариант был куда насыщеннее,
+            но сейчас сайт выглядит легче и удобнее. И, если честно, я довольна тем, что получилось:
+            проект вышел с характером.
+          </p>
+
+          <p>
+            Ещё одним стимулом послужил дизайн сайта <i>getpen</i>, который не менялся с 2012 года.
+            Компания отличная — и хочется, чтобы их сайт это отражал.
+            Свой проект я делала как современную интерпретацию магазина для любителей пера и чернил.
+          </p>
+
+          <p>
+            В качестве стека выбрала <b>MERN</b> (MongoDB, Express, React, Node.js): он популярен, хорошо задокументирован
+            и относительно прост для входа. Единственный минус — в рамках этого проекта я не успела
+            познакомиться с PostgreSQL; в следующих работах планирую это исправить и попробовать реляционную модель.
+          </p>
         </div>
       </div>
 
-      <div className='text-4xl py-4 max-w-6xl mx-auto px-4'>
-        Почему мы?
-      </div>
 
-      <div className='max-w-6xl mx-auto px-4'>
-        <div className='flex flex-col md:flex-row justify-between gap-6 text-primary text-sm'>
-          <div className='flex-1 border px-6 sm:px-10 py-8 sm:py-20 flex flex-col gap-5'>
-            <b>Контроль качества:</b>
-            <p>Контент первый</p>
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="flex flex-col md:flex-row justify-between gap-6 text-primary text-sm">
+          <div className="flex-1 border px-6 sm:px-10 py-8 sm:py-16 flex flex-col gap-4">
+            <b className="font-semibold">Фронтенд</b>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>React + React Router</li>
+              <li>Context API (собственный ShopContext)</li>
+              <li>Tailwind CSS + кастомные CSS-модули</li>
+              <li>Headless UI (Disclosure), noUiSlider</li>
+              <li>Swiper для слайдеров</li>
+              <li>Адаптивная верстка и работа с спрайтами/иконками</li>
+            </ul>
           </div>
-          <div className='flex-1 border px-6 sm:px-10 py-8 sm:py-20 flex flex-col gap-5'>
-            <b>Контроль качества:</b>
-            <p>Контент второй</p>
+
+          <div className="flex-1 border px-6 sm:px-10 py-8 sm:py-16 flex flex-col gap-4">
+            <b className="font-semibold">Бэкенд</b>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Node.js + Express</li>
+              <li>MongoDB + Mongoose</li>
+              <li>JWT-авторизация, хэширование паролей</li>
+              <li>REST API для каталога и корзины</li>
+              <li>Валидации и базовая обработка ошибок</li>
+            </ul>
           </div>
-          <div className='flex-1 border px-6 sm:px-10 py-8 sm:py-20 flex flex-col gap-5'>
-            <b>Контроль качества:</b>
-            <p>Контент третий</p>
+
+          <div className="flex-1 border  px-6 sm:px-10 py-8 sm:py-16 flex flex-col gap-4">
+            <b className="font-semibold">Планы и развитие</b>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Познакомиться с PostgreSQL</li>
+              <li>Контейнеризировать проект и задеплоить на свой VPS</li>
+              <li>Добавить блог/статьи</li>
+              <li>Расширить личный кабинет и историю заказов</li>
+              <li>Новые категории: Чернила, Бумага и Аксессуары</li>
+              <li>Больше анимаций и газетной эстетики!</li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
-
   )
 }
 
 export default About
-

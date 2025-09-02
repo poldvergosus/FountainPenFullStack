@@ -12,7 +12,7 @@ const infoLinks = [
   { label: "О нас", href: "/about" },
   { label: "F.A.Q", href: "/*" },
   { label: "Статьи", href: "/*" },
-  { label: "Контакты", href: "/contact" },
+  { label: "Контакты", href: "/*" },
   { label: "Возврат", href: "/*" },
 ];
 
@@ -45,27 +45,23 @@ const Footer = () => {
               </div>
 
              
-              <div className="md:hidden flex flex-wrap items-center justify-center gap-x-4 gap-y-1 my-4 text-[color:var(--color-primary)]">
-                <span>Москва: +7 (495) 210-99-81</span>
-                <span>СПБ: +7 (495) 210-99-81</span>
-                <a href="mailto:info@pens.ru" className="underline decoration-inherit">info@pens.ru</a>
+              <div className="md:hidden flex flex-wrap items-center justify-center  gap-x-4 gap-y-1 my-4 text-[color:var(--color-primary)]">
+                <span>СПБ: +7 (913) 622-08-66</span>
+                <a href="hfi3geox5rgb@mail.ru" className="text-primary hover:text-accent">Написать мне на почту</a>
               </div>
 
               <div className="hidden md:block">
                 <p className="my-[1em]">
-                  Москва<br />+7 (495) 210-99-81
+                  СПБ<br />+7 (913) 622-08-66
                 </p>
                 <p className="my-[1em]">
-                  СПБ<br />+7 (495) 210-99-81
-                </p>
-                <p className="my-[1em]">
-                  <a href="mailto:info@pens.ru" className="text-[color:var(--color-primary)]">info@pens.ru</a>
+                  <a href="mailto:hfi3geox5rgb@mail.ru" className="text-primary hover:text-accent">Написать мне на почту</a>
                 </p>
               </div>
 
               <div className="inline-flex gap-[10px] items-center justify-center md:justify-start mt-2">
-                <a href="#"><img src={assets.social.vkIcon} alt="VK" /></a>
-                <a href="#"><img src={assets.social.tgIcon} alt="Telegram" /></a>
+                <a href="https://t.me/poldverg"><img src={assets.social.vkIcon} alt="VK" /></a>
+                <a href="https://t.me/poldverg"><img src={assets.social.tgIcon} alt="Telegram" /></a>
               </div>
             </div>
 
@@ -79,7 +75,7 @@ const Footer = () => {
                     <li key={l.label}>
                       <a
                         href={l.href}
-                        className="no-underline text-[color:var(--color-primary)] block my-[1em]"
+                        className="no-underline text-primary hover:text-accent block my-[1em]"
                       >
                         {l.label}
                       </a>
@@ -127,7 +123,7 @@ const Footer = () => {
                     <li key={l.label}>
                       <a
                         href={l.href}
-                        className="no-underline text-[color:var(--color-primary)] block my-[1em]"
+                        className="no-underline text-primary hover:text-accent block my-[1em]"
                       >
                         {l.label}
                       </a>

@@ -79,8 +79,6 @@ const Navbar = () => {
             </svg>
           </button>
 
-          
-
           <NavLink to="/cart" className="icon-btn cart" aria-label="Корзина">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="9" cy="21" r="1" />
@@ -89,7 +87,6 @@ const Navbar = () => {
             </svg>
           </NavLink>
         </div>
-
 
         {/* Основной контент */}
         <div className="header-wrapper">

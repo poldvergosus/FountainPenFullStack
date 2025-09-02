@@ -6,17 +6,17 @@ const categories = [
   {
    name: "Чернила",
     icon: "icon-ink",
-    link: "/collection/inks",
+    link: "/*",
   },
   {
     name: "Перьевые ручки",
     icon: "icon-pen",
-    link: "/collection/pens",
+    link: "/collection",
   },
   {
     name: "Ежедневники",
     icon: "icon-notebook",
-    link: "/collection/notebooks",
+    link: "/*",
   },
 ];
 
