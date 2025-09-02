@@ -125,9 +125,9 @@ const Navbar = () => {
 
             <nav className="category-menu flex flex-row justify-center items-center gap-[0.9375rem] font-literata font-normal text-[length:var(--font-size-regular)] leading-6 text-center">
               <NavLink to="/collection" className="text-primary hover:text-accent">Перьевые ручки</NavLink>
-              <NavLink to="/collection" className="text-primary hover:text-accent">Чернила</NavLink>
-              <NavLink to="/collection" className="text-primary hover:text-accent">Бумага</NavLink>
-              <NavLink to="/collection" className="text-primary hover:text-accent">Аксессуары</NavLink>
+              <NavLink to="/*" className="text-primary hover:text-accent">Чернила</NavLink>
+              <NavLink to="/*" className="text-primary hover:text-accent">Бумага</NavLink>
+              <NavLink to="/*" className="text-primary hover:text-accent">Аксессуары</NavLink>
             </nav>
           </div>
 
@@ -184,9 +184,9 @@ const Navbar = () => {
         >
           <nav className="mobile-nav-links">
             <NavLink to="/collection" onClick={() => setIsMenuOpen(false)}>Перьевые ручки</NavLink>
-            <NavLink to="/collection" onClick={() => setIsMenuOpen(false)}>Чернила</NavLink>
-            <NavLink to="/collection" onClick={() => setIsMenuOpen(false)}>Бумага</NavLink>
-            <NavLink to="/collection" onClick={() => setIsMenuOpen(false)}>Аксессуары</NavLink>
+            <NavLink to="/*" onClick={() => setIsMenuOpen(false)}>Чернила</NavLink>
+            <NavLink to="/*" onClick={() => setIsMenuOpen(false)}>Бумага</NavLink>
+            <NavLink to="/*" onClick={() => setIsMenuOpen(false)}>Аксессуары</NavLink>
             <hr />
             {!token ? (
               <button className="mobile-link-btn" onClick={() => { setIsMenuOpen(false); navigate('/login') }}>Войти</button>
