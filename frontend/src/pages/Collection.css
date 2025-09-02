@@ -1,4 +1,4 @@
-/* Высота слайдера */
+
 #slider-round {
   height: 10px;
 }
@@ -56,5 +56,5 @@
 }
 
 .no-spinner {
-  -moz-appearance: textfield; /* Firefox */
+  -moz-appearance: textfield; 
 }

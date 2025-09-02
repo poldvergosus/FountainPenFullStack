@@ -9,8 +9,7 @@ const ProductGrid = ({ title, products = [], onSizeClick, columns = 3 }) => {
   const navigate = useNavigate();
   const responsiveGridClass = `
   grid-cols-2 
-  lg:grid-cols-2 
-  xl:grid-cols-3 
+  sm:grid-cols-3 
 `;
 
  const handleSizeClick = (e, size) => {

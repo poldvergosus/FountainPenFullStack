@@ -101,6 +101,14 @@ const Collection = () => {
     querySearch,
   ]);
 
+  const resetFilters = () => {
+    setSelectedBrands([]);
+    setSelectedSizes([]);
+    setSelectedColors([]);
+    setInStockOnly(true);
+    setPriceRange([minPrice, maxPrice]);
+  };
+
   // =========================
   // ОСНОВНЫЕ HANDLERS ДЛЯ ФИЛЬТРОВ
   // =========================
@@ -199,18 +207,18 @@ const Collection = () => {
 
   return (
     <div className="w-full px-4 pt-10">
-      <div className="flex flex-col md:flex-row gap-10 max-w-[1760px] mx-auto">
+      <div className="flex flex-col 2xl:flex-row gap-10 max-w-[1760px] mx-auto">
         {/* ЛЕВЫЙ ФИЛЬТР */}
-        <div className="w-full md:max-w-[20rem]">
+        <div className="w-full 2xl:max-w-[20rem]">
           <p
             className='font-bold flex items-center cursor-pointer gap-2 mb-3 text-primary font-literata'
             onClick={() => setShowFilter(!showFilter)}
           >
-            ФИЛЬТРЫ <span className='md:hidden'>{showFilter ? '▲' : '▼'}</span>
+            ФИЛЬТРЫ <span className='2xl:hidden'>{showFilter ? '▲' : '▼'}</span>
           </p>
 
           {/* Блок с фильтрами и рамкой */}
-          <div className={`sticky top-0 z-10 border-2 border-primary ${showFilter ? 'block' : 'hidden'} md:block p-4`}>
+          <div className={`sticky top-0 z-10 border-2 border-primary ${showFilter ? 'block' : 'hidden'} 2xl:block p-4`}>
 
             {/* === РАЗМЕР === */}
             <Disclosure defaultOpen={true}>
@@ -401,7 +409,14 @@ const Collection = () => {
                 </div>
               )}
             </Disclosure>
-
+            <div className="mt-4 flex justify-start">
+              <button
+                onClick={resetFilters}
+                className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:text-accent hover:border-accent font-medium transition"
+              >
+                Сбросить фильтры
+              </button>
+            </div>
           </div>
         </div>
 
@@ -422,7 +437,7 @@ const Collection = () => {
               Результаты поиска для: <span className="italic font-semibold">{querySearch}</span>
             </h2>
           )}
-          <ProductGrid products={filteredProducts.slice(0, visibleCount)} columns={3} onSizeClick={handleSizeFromCard}/>
+          <ProductGrid products={filteredProducts.slice(0, visibleCount)} columns={3} onSizeClick={handleSizeFromCard} />
 
           {/* Показать ещё */}
           {visibleCount < filteredProducts.length && (
