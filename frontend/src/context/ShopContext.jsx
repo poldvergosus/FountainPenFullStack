@@ -7,7 +7,7 @@ export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
   const currency = 'р.';
-  const delivery_fee = 300; 
+  const delivery_fee = 300;
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -15,6 +15,7 @@ const ShopContextProvider = (props) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState("")
+  const [blogs, setBlogs] = useState([]);
 
   const addToCart = async (itemId) => {
     let cartData = structuredClone(cartItems);
@@ -67,20 +68,20 @@ const ShopContextProvider = (props) => {
 
     for (const itemId in cartItems) {
       const quantity = cartItems[itemId];
-      
+
       if (quantity > 0) {
         const itemInfo = products.find(
           (product) => product._id.toString() === itemId.toString()
         );
-        
+
         if (itemInfo) {
           const price = Number(itemInfo.price);
           const qty = Number(quantity);
-          
+
           console.log(`Product: ${itemInfo.title}`);
           console.log(`Price: ${price} (type: ${typeof itemInfo.price})`);
           console.log(`Quantity: ${qty}`);
-          
+
           if (!isNaN(price) && !isNaN(qty) && price > 0 && qty > 0) {
             const subtotal = price * qty;
             console.log(`Subtotal: ${subtotal}`);
@@ -110,7 +111,7 @@ const ShopContextProvider = (props) => {
           ...product,
           price: Number(product.price) || 0
         }));
-        
+
         setProducts(productsWithNumericPrices);
         console.log('Products loaded:', productsWithNumericPrices.length);
       } else {
@@ -134,8 +135,23 @@ const ShopContextProvider = (props) => {
     }
   }
 
+  const getBlogsData = async () => {
+    try {
+      const response = await axios.get(backendUrl + '/api/blog/list')
+      if (response.data.success) {
+        setBlogs(response.data.blogs)
+      } else {
+        toast.error(response.data.message)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
   useEffect(() => {
     getProductsData()
+    getBlogsData()
   }, [])
 
   useEffect(() => {
@@ -145,24 +161,27 @@ const ShopContextProvider = (props) => {
     }
   }, [])
 
+
+
   const value = {
-    products, 
+    products,
     currency,
     delivery_fee,
-    search, 
-    setSearch, 
-    showSearch, 
+    search,
+    setSearch,
+    showSearch,
     setShowSearch,
-    cartItems, 
-    addToCart, 
+    cartItems,
+    addToCart,
     setCartItems,
-    getCartCount, 
+    getCartCount,
     updateQuantity,
-    getCartAmount, 
-    navigate, 
+    getCartAmount,
+    navigate,
     backendUrl,
-    setToken, 
-    token
+    setToken,
+    token,
+    blogs
   };
 
   return (
