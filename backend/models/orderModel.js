@@ -3,8 +3,8 @@ import mongoose from 'mongoose'
 const orderSchema = new mongoose.Schema({
     userId: {
         type: String, 
-        required: false,  
-        default: null    
+        required: false,
+        default: null
     },
     items: {type: Array, required: true},
     amount: {type: Number, required: true},
@@ -12,7 +12,8 @@ const orderSchema = new mongoose.Schema({
     status: {type: String, required: true, default: 'Заказ сформирован'},
     paymentMethod: {type: String, required: true},
     payment: {type: Boolean, required: true, default: false},
-    date: {type: Date, default: Date.now}
+    date: {type: Date, default: Date.now},
+    comment: {type: String, default: ''}
 })
 
 const orderModel = mongoose.models.order || mongoose.model('order', orderSchema)

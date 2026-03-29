@@ -3,24 +3,45 @@ import userModel from "../models/userModel.js";
 
 // placing orders using COD method
 const placeOrder = async (req, res) => {
+    console.log('ПОЛУЧЕН ЗАПРОС НА СОЗДАНИЕ ЗАКАЗА');
+    console.log('Request body:', req.body);
+    
     try {
         const { userId, items, address, amount } = req.body;
 
         if (!items || items.length === 0) {
+            console.log(' Корзина пуста');
             return res.json({ success: false, message: "Корзина пуста" });
         }
 
         if (!address || !address.name || !address.email || !address.phone) {
+            console.log(' Не заполнены обязательные поля');
             return res.json({ success: false, message: "Заполните все обязательные поля" });
         }
 
         const subtotal = items.reduce((sum, it) => {
             const qty = Number(it.quantity || 0);
             const price = Number(it.price || 0);
+            
+            if (isNaN(qty) || isNaN(price)) {
+                console.warn('Invalid item:', it);
+                return sum;
+            }
+            
             return sum + (price * qty);
         }, 0);
 
-        const finalAmount = amount || subtotal;
+        let finalAmount = Number(amount);
+        if (isNaN(finalAmount) || finalAmount <= 0) {
+            finalAmount = subtotal;
+        }
+
+        console.log('Subtotal:', subtotal);
+        console.log('Final amount:', finalAmount);
+
+        if (finalAmount <= 0) {
+            return res.json({ success: false, message: "Неверная сумма заказа" });
+        }
 
         const orderData = {
             userId: userId || null,
@@ -29,17 +50,23 @@ const placeOrder = async (req, res) => {
             amount: finalAmount,
             paymentMethod: "COD",
             payment: false,
-            date: new Date()
+            date: new Date(),
+            comment: address.comment || ''
         }
+
+        console.log('Order data to save:', orderData);
 
         const newOrder = new orderModel(orderData);
         await newOrder.save();
 
+        console.log('Заказ сохранен:', newOrder._id);
+
         if (userId) {
             try {
                 await userModel.findByIdAndUpdate(userId, { cartData: {} });
+                console.log('Корзина очищена');
             } catch (error) {
-                console.log('Error clearing cart:', error);
+                console.log('Ошибка очистки корзины:', error);
             }
         }
 
@@ -47,15 +74,14 @@ const placeOrder = async (req, res) => {
             success: true, 
             message: "Заказ успешно оформлен",
             orderId: newOrder._id,
-            isGuest: !userId 
+            isGuest: !userId
         });
 
     } catch (error) {
-        console.log(error);
+        console.error('ОШИБКА ПРИ СОЗДАНИИ ЗАКАЗА:', error);
         res.json({ success: false, message: error.message });
     }
 }
-
 //Orders data for Admin Panel
 const allOrders = async (req, res) => {
     try {

@@ -105,4 +105,45 @@ const singleProduct = async (req, res) => {
 
 }
 
-export { listProducts, addProduct, removeProduct, singleProduct }
+const updateProduct = async (req, res) => {
+    try {
+        const { 
+            id, title, desc, price, popular, category, 
+            brand, nibmaterial, size, details, colors 
+        } = req.body;
+
+        const product = await productModel.findById(id);
+        
+        if (!product) {
+            return res.json({ success: false, message: "Товар не найден" });
+        }
+
+        product.title = title;
+        product.desc = desc;
+        product.price = Number(price);
+        product.popular = popular === 'true' || popular === true;
+        product.category = category;
+        product.brand = brand;
+        product.nibmaterial = nibmaterial === 'true' || nibmaterial === true;
+        product.size = size;
+        product.details = details;
+        product.colors = JSON.parse(colors);
+
+        if (req.file) {
+            const imageUrl = await cloudinary.uploader.upload(req.file.path, { resource_type: 'image' });
+            product.image = imageUrl.secure_url;
+        }
+
+        await product.save();
+
+        res.json({ success: true, message: "Товар обновлен" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+
+export { addProduct, listProducts, removeProduct, singleProduct, updateProduct };
+
