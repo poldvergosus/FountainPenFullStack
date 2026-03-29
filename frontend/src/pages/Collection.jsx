@@ -9,9 +9,8 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 
 const Collection = () => {
-  // =========================
   // STATE
-  // =========================
+
   const [isPriceOpen, setIsPriceOpen] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [selectedBrands, setSelectedBrands] = useState([]);
@@ -21,9 +20,8 @@ const Collection = () => {
   const [sortOrder, setSortOrder] = useState('price-asc');
   const [visibleCount, setVisibleCount] = useState(12);
 
-  // =========================
   //  ДАННЫЕ ПРОДУКТОВ
-  // =========================
+
   const { products = [] } = useContext(ShopContext) || {};
   const { search, showSearch } = useContext(ShopContext);
   const location = useLocation();
@@ -40,7 +38,6 @@ const Collection = () => {
   const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
   const { brandName } = useParams();
 
-  //  Массивы фильтров (бренды, размеры, цвета)
   const allBrands = useMemo(() => {
     return [...new Set(products.map(p => p.brand).filter(Boolean))];
   }, [products]);
@@ -56,16 +53,20 @@ const Collection = () => {
       );
   }, [products]);
 
-  // =========================
   //  ФИЛЬТРАЦИЯ И СОРТИРОВКА
-  // =========================
   const searchWords = querySearch.toLowerCase().split(" ").filter(Boolean);
 
   const filteredProducts = useMemo(() => {
     const filtered = products.filter((p) => {
       const price = Number(p.price);
       const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
-      const matchesBrand = selectedBrands.length === 0 || selectedBrands.some(b => (p.brand || '').toLowerCase() === b.toLowerCase());
+
+      const matchesBrand =
+        selectedBrands.length === 0 ||
+        selectedBrands.some(b =>
+          (p.brand || '').toLowerCase() === b.toLowerCase()
+        );
+
       const matchesSize = selectedSizes.length === 0 || selectedSizes.includes(p.size);
       const matchesColor =
         selectedColors.length === 0 ||
@@ -99,7 +100,7 @@ const Collection = () => {
     selectedSizes,
     selectedColors,
     sortOrder,
-    querySearch,
+    searchWords,
   ]);
 
   const resetFilters = () => {
@@ -110,9 +111,7 @@ const Collection = () => {
     setPriceRange([minPrice, maxPrice]);
   };
 
-  // =========================
   // ОСНОВНЫЕ HANDLERS ДЛЯ ФИЛЬТРОВ
-  // =========================
   const handleBrandToggle = (brand) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
@@ -135,32 +134,29 @@ const Collection = () => {
     setVisibleCount(prev => prev + 6);
   };
 
-  // =========================
   // noUiSlider — ИНИЦИАЛИЗАЦИЯ
-  // =========================
   const sliderRef = useRef(null);
   const minInputRef = useRef(null);
   const maxInputRef = useRef(null);
 
   useEffect(() => {
     if (brandName) {
-      setSelectedBrands([brandName]);
+      const found = allBrands.find(
+        b => b.toLowerCase() === brandName.toLowerCase()
+      );
+
+      setSelectedBrands(found ? [found] : [brandName]);
       setVisibleCount(12);
     } else {
       setSelectedBrands([]);
     }
-  }, [brandName]);
-
-  useEffect(() => {
-    if (querySize) {
-      setSelectedSizes([querySize]);
-      setVisibleCount(12);
-    }
-  }, [querySize]);
+  }, [brandName, allBrands]);
 
   useEffect(() => {
     if (!queryBrand) {
-      setSelectedBrands([]);
+      if (!brandName) {
+        setSelectedBrands([]);
+      }
       return;
     }
 
@@ -171,13 +167,11 @@ const Collection = () => {
     if (found) {
       setSelectedBrands([found]);
     } else {
-
       setSelectedBrands([queryBrand]);
     }
 
     setVisibleCount(12);
-    setShowFilter(true);
-  }, [queryBrand, allBrands]);
+  }, [queryBrand, allBrands, brandName]);
 
   const handleSizeFromCard = (size) => {
     setSelectedSizes([size]);
@@ -234,10 +228,8 @@ const Collection = () => {
             ФИЛЬТРЫ <span className='2xl:hidden'>{showFilter ? '▲' : '▼'}</span>
           </p>
 
-          {/* Блок с фильтрами и рамкой */}
           <div className={`sticky top-0 z-10 border-2 border-primary ${showFilter ? 'block' : 'hidden'} 2xl:block p-4`}>
 
-            {/* === РАЗМЕР === */}
             <Disclosure defaultOpen={true}>
               {({ open }) => (
                 <div className="border-b border-primary mb-2">
@@ -269,7 +261,6 @@ const Collection = () => {
               )}
             </Disclosure>
 
-            {/* === ЦЕНА === */}
             <div className="border-b border-primary">
               <Disclosure defaultOpen={true}>
                 {({ open }) => {
@@ -317,7 +308,6 @@ const Collection = () => {
               </Disclosure>
             </div>
 
-            {/* === НАЛИЧИЕ === */}
             <Disclosure defaultOpen={true}>
               {({ open }) => (
                 <div className="border-b border-primary mb-6">
@@ -340,7 +330,6 @@ const Collection = () => {
               )}
             </Disclosure>
 
-            {/* === БРЕНД === */}
             <Disclosure>
               {({ open }) => (
                 <div className="border-b border-primary mb-6">
@@ -366,7 +355,6 @@ const Collection = () => {
             </Disclosure>
 
 
-            {/* === ЦВЕТ === */}
             <Disclosure>
               {({ open }) => (
                 <div className="border-b border-primary mb-6">
@@ -413,7 +401,6 @@ const Collection = () => {
                           {selectedColors.includes(color.name)
                           }
                         </span>
-                        {/* Tooltip */}
                         <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2
   px-2 py-1 text-xs text-white bg-gray-800 rounded
   opacity-0 group-hover:opacity-100 transition-opacity
