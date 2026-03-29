@@ -14,6 +14,7 @@ import Blog from './pages/Blog'
 import Footer from './components/Footer'
 import SearchBar from './components/SearchBar'
 import NotFound from './pages/NotFound'
+import OrderSuccess from './pages/OrderSuccess'
 
 const App = () => {
     return (
@@ -33,6 +34,7 @@ const App = () => {
                 <Route path='/blog' element={<Blog/>}/>
                 <Route path='*' element={<NotFound />} />
                 <Route path='/collection/:brandName' element={<Collection/>}/>
+                <Route path='/order-success' element={<OrderSuccess />} />
             </Routes>
             <Footer/>
         </div>

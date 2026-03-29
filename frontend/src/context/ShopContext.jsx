@@ -1,15 +1,14 @@
 import { createContext, useEffect, useState } from "react";
-// import { products } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { toast } from 'react-toastify'
-
 
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
   const currency = 'р.';
-  const backendUrl = import.meta.env.VITE_BACKEND_URL
+  const delivery_fee = 300; 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
@@ -21,8 +20,7 @@ const ShopContextProvider = (props) => {
     let cartData = structuredClone(cartItems);
     if (cartData[itemId]) {
       cartData[itemId] += 1;
-    }
-    else {
+    } else {
       cartData[itemId] = 1
     }
     setCartItems(cartData);
@@ -63,17 +61,44 @@ const ShopContextProvider = (props) => {
   const getCartAmount = () => {
     let totalAmount = 0;
 
+    console.log('=== РАСЧЕТ СУММЫ КОРЗИНЫ ===');
+    console.log('Cart items:', cartItems);
+    console.log('Products count:', products.length);
+
     for (const itemId in cartItems) {
       const quantity = cartItems[itemId];
+      
       if (quantity > 0) {
         const itemInfo = products.find(
           (product) => product._id.toString() === itemId.toString()
         );
+        
         if (itemInfo) {
-          totalAmount += itemInfo.price * quantity;
+          const price = Number(itemInfo.price);
+          const qty = Number(quantity);
+          
+          console.log(`Product: ${itemInfo.title}`);
+          console.log(`Price: ${price} (type: ${typeof itemInfo.price})`);
+          console.log(`Quantity: ${qty}`);
+          
+          if (!isNaN(price) && !isNaN(qty) && price > 0 && qty > 0) {
+            const subtotal = price * qty;
+            console.log(`Subtotal: ${subtotal}`);
+            totalAmount += subtotal;
+          } else {
+            console.warn(` Invalid price or quantity for product ${itemInfo.title}:`, {
+              originalPrice: itemInfo.price,
+              price,
+              qty
+            });
+          }
+        } else {
+          console.warn(` Product not found for ID: ${itemId}`);
         }
       }
     }
+
+    console.log('Total amount:', totalAmount);
     return totalAmount;
   };
 
@@ -81,9 +106,14 @@ const ShopContextProvider = (props) => {
     try {
       const response = await axios.get(backendUrl + '/api/product/list')
       if (response.data.success) {
-        setProducts(response.data.products)
-      }
-      else {
+        const productsWithNumericPrices = response.data.products.map(product => ({
+          ...product,
+          price: Number(product.price) || 0
+        }));
+        
+        setProducts(productsWithNumericPrices);
+        console.log('Products loaded:', productsWithNumericPrices.length);
+      } else {
         toast.error(response.data.message)
       }
     } catch (error) {
@@ -94,7 +124,6 @@ const ShopContextProvider = (props) => {
 
   const getUserCart = async (token) => {
     try {
-
       const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token } })
       if (response.data.success) {
         setCartItems(response.data.cartData)
@@ -117,12 +146,23 @@ const ShopContextProvider = (props) => {
   }, [])
 
   const value = {
-    products, currency,
-    search, setSearch, showSearch, setShowSearch,
-    cartItems, addToCart, setCartItems,
-    getCartCount, updateQuantity,
-    getCartAmount, navigate, backendUrl,
-    setToken, token
+    products, 
+    currency,
+    delivery_fee,
+    search, 
+    setSearch, 
+    showSearch, 
+    setShowSearch,
+    cartItems, 
+    addToCart, 
+    setCartItems,
+    getCartCount, 
+    updateQuantity,
+    getCartAmount, 
+    navigate, 
+    backendUrl,
+    setToken, 
+    token
   };
 
   return (

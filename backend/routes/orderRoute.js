@@ -1,18 +1,18 @@
-import express from 'express'
-import {placeOrder, allOrders, userOrders, updateStatus} from  '../controllers/orderController.js'
-import adminAuth from '../middleware/adminAuth.js'
-import authUser from '../middleware/auth.js'
+import express from 'express';
+import { placeOrder, allOrders, userOrders, updateStatus } from '../controllers/orderController.js';
+import adminAuth from '../middleware/adminAuth.js';
+import { auth, optionalAuth } from '../middleware/auth.js';
 
-const orderRouter = express.Router()
+const orderRouter = express.Router();
 
-//admin features
-orderRouter.post('/list', adminAuth, allOrders)
-orderRouter.post('/status', adminAuth, updateStatus)
+// Admin features
+orderRouter.post('/list', adminAuth, allOrders);
+orderRouter.post('/status', adminAuth, updateStatus);
 
-// Payment
-orderRouter.post('/place', authUser, placeOrder)
+// Payment features
+orderRouter.post('/place', optionalAuth, placeOrder);
 
-// User Feature 
-orderRouter.post('/userorders', authUser, userOrders)
+// User feature
+orderRouter.post('/userorders', auth, userOrders); 
 
-export default orderRouter
+export default orderRouter;

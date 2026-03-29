@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-const authUser = async (req, res, next) => {
-
+const auth = async (req, res, next) => {
     const {token} = req.headers;
 
     if (!token) {
@@ -12,12 +11,29 @@ const authUser = async (req, res, next) => {
         const token_decode = jwt.verify(token, process.env.JWT_SECRET)
         req.body.userId = token_decode.id
         next()
-
     } catch (error) {
         console.log(error)
         res.json({success: false, message: error.message})
     }
-
 }
 
-export default authUser
+const optionalAuth = async (req, res, next) => {
+    const {token} = req.headers;
+
+    if (token) {
+        try {
+            const token_decode = jwt.verify(token, process.env.JWT_SECRET)
+            req.body.userId = token_decode.id
+        } catch (error) {
+            console.log('Invalid or expired token, proceeding as guest')
+            req.body.userId = null
+        }
+    } else {
+        req.body.userId = null
+    }
+    
+    next()
+}
+
+export { auth, optionalAuth } 
+export default auth 
