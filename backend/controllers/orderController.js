@@ -1,36 +1,52 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import productModel from "../models/productModel.js";
+import mongoose from "mongoose";
 
-// placing orders using COD method
 const placeOrder = async (req, res) => {
+    const session = await mongoose.startSession();
     
     try {
+        session.startTransaction();
+
         const { userId, items, address, amount } = req.body;
 
         if (!items || items.length === 0) {
-            console.log('Корзина пуста');
+            await session.abortTransaction();
+            session.endSession();
             return res.json({ success: false, message: "Корзина пуста" });
         }
 
         if (!address || !address.name || !address.email || !address.phone) {
-            console.log('Не заполнены обязательные поля');
+            await session.abortTransaction();
+            session.endSession();
             return res.json({ success: false, message: "Заполните все обязательные поля" });
         }
 
         const stockErrors = [];
-        
-        for (const item of items) {
-            const product = await productModel.findById(item._id);
-            
-            if (!product) {
-                stockErrors.push(`Товар "${item.title}" не найден`);
-                continue;
-            }
 
-            if (product.stock < item.quantity) {
-                if (product.stock === 0) {
-                    stockErrors.push(`"${item.title}" — нет в наличии`);
+        for (const item of items) {
+            const result = await productModel.findOneAndUpdate(
+                { 
+                    _id: item._id, 
+                    stock: { $gte: item.quantity }
+                },
+                { 
+                    $inc: { stock: -item.quantity }
+                },
+                { 
+                    new: true, 
+                    session 
+                }
+            );
+
+            if (!result) {
+                const product = await productModel.findById(item._id).session(session);
+                
+                if (!product) {
+                    stockErrors.push(`"${item.title}" — товар не найден`);
+                } else if (product.stock === 0) {
+                    stockErrors.push(`"${item.title}" — закончился`);
                 } else {
                     stockErrors.push(`"${item.title}" — доступно только ${product.stock} шт.`);
                 }
@@ -38,28 +54,19 @@ const placeOrder = async (req, res) => {
         }
 
         if (stockErrors.length > 0) {
+            await session.abortTransaction();
+            session.endSession();
             return res.json({ 
                 success: false, 
-                message: stockErrors.join('; '),
+                message: "Некоторые товары недоступны",
                 stockErrors 
-            });
-        }
-
-        for (const item of items) {
-            await productModel.findByIdAndUpdate(item._id, {
-                $inc: { stock: -item.quantity }
             });
         }
 
         const subtotal = items.reduce((sum, it) => {
             const qty = Number(it.quantity || 0);
             const price = Number(it.price || 0);
-            
-            if (isNaN(qty) || isNaN(price)) {
-                console.warn('Invalid item:', it);
-                return sum;
-            }
-            
+            if (isNaN(qty) || isNaN(price)) return sum;
             return sum + (price * qty);
         }, 0);
 
@@ -69,11 +76,8 @@ const placeOrder = async (req, res) => {
         }
 
         if (finalAmount <= 0) {
-            for (const item of items) {
-                await productModel.findByIdAndUpdate(item._id, {
-                    $inc: { stock: item.quantity }
-                });
-            }
+            await session.abortTransaction();
+            session.endSession();
             return res.json({ success: false, message: "Неверная сумма заказа" });
         }
 
@@ -89,17 +93,14 @@ const placeOrder = async (req, res) => {
         }
 
         const newOrder = new orderModel(orderData);
-        await newOrder.save();
-
-        console.log('Заказ сохранен:', newOrder._id);
+        await newOrder.save({ session });
 
         if (userId) {
-            try {
-                await userModel.findByIdAndUpdate(userId, { cartData: {} });
-            } catch (error) {
-                console.log('Ошибка очистки корзины:', error);
-            }
+            await userModel.findByIdAndUpdate(userId, { cartData: {} }, { session });
         }
+
+        await session.commitTransaction();
+        session.endSession();
 
         res.json({ 
             success: true, 
@@ -109,15 +110,16 @@ const placeOrder = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('ОШИБКА ПРИ СОЗДАНИИ ЗАКАЗА:', error);
-        res.json({ success: false, message: error.message });
+        await session.abortTransaction();
+        session.endSession();
+        console.error('ОШИБКА:', error);
+        res.json({ success: false, message: "Ошибка при оформлении заказа. Попробуйте снова." });
     }
 }
 
-// Orders data for Admin Panel
 const allOrders = async (req, res) => {
     try {
-        const orders = await orderModel.find({}).sort({ date: -1 }); 
+        const orders = await orderModel.find({}).sort({ date: -1 });
         res.json({ success: true, orders });
     } catch (error) {
         console.log(error);
@@ -125,15 +127,12 @@ const allOrders = async (req, res) => {
     }
 }
 
-// User Order Data for Frontend
 const userOrders = async (req, res) => {
     try {
         const { userId } = req.body;
-        
         if (!userId) {
             return res.json({ success: false, message: "Необходима авторизация" });
         }
-        
         const orders = await orderModel.find({ userId }).sort({ date: -1 });
         res.json({ success: true, orders });
     } catch (error) {
@@ -142,60 +141,88 @@ const userOrders = async (req, res) => {
     }
 }
 
-// Update order status from Admin panel
 const updateStatus = async (req, res) => {
+    const session = await mongoose.startSession();
+    
     try {
+        session.startTransaction();
+
         const { orderId, status } = req.body;
-        
+
         if (!orderId || !status) {
-            return res.json({ success: false, message: "Не указан ID заказа или статус" });
+            await session.abortTransaction();
+            session.endSession();
+            return res.json({ success: false, message: "Не указан ID или статус" });
         }
-        
+
         if (status === "Отменён") {
-            const order = await orderModel.findById(orderId);
+            const order = await orderModel.findById(orderId).session(session);
             if (order && order.status !== "Отменён") {
                 for (const item of order.items) {
-                    await productModel.findByIdAndUpdate(item._id, {
-                        $inc: { stock: item.quantity }
-                    });
+                    await productModel.findByIdAndUpdate(
+                        item._id,
+                        { $inc: { stock: item.quantity } },
+                        { session }
+                    );
                 }
-                console.log('Товары возвращены на склад для заказа:', orderId);
             }
         }
-        
-        await orderModel.findByIdAndUpdate(orderId, { status });
+
+        await orderModel.findByIdAndUpdate(orderId, { status }, { session });
+
+        await session.commitTransaction();
+        session.endSession();
+
         res.json({ success: true, message: 'Статус обновлен' });
+
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         console.log(error);
         res.json({ success: false, message: error.message });
     }
 }
 
 const cancelOrder = async (req, res) => {
+    const session = await mongoose.startSession();
+    
     try {
+        session.startTransaction();
+
         const { orderId } = req.body;
-        const order = await orderModel.findById(orderId);
+        const order = await orderModel.findById(orderId).session(session);
 
         if (!order) {
+            await session.abortTransaction();
+            session.endSession();
             return res.json({ success: false, message: "Заказ не найден" });
         }
 
         if (order.status === "Отменён") {
+            await session.abortTransaction();
+            session.endSession();
             return res.json({ success: false, message: "Заказ уже отменён" });
         }
 
         for (const item of order.items) {
-            await productModel.findByIdAndUpdate(item._id, {
-                $inc: { stock: item.quantity }
-            });
+            await productModel.findByIdAndUpdate(
+                item._id,
+                { $inc: { stock: item.quantity } },
+                { session }
+            );
         }
 
         order.status = "Отменён";
-        await order.save();
+        await order.save({ session });
 
-        res.json({ success: true, message: "Заказ отменён, товары возвращены на склад" });
+        await session.commitTransaction();
+        session.endSession();
+
+        res.json({ success: true, message: "Заказ отменён, товары возвращены" });
 
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         console.log(error);
         res.json({ success: false, message: error.message });
     }

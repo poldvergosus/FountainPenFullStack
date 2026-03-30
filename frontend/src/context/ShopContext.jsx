@@ -215,6 +215,21 @@ const ShopContextProvider = (props) => {
     }
   }
 
+  const refreshProducts = async () => {
+  try {
+    const response = await axios.get(backendUrl + '/api/product/list')
+    if (response.data.success) {
+      const productsWithNumericPrices = response.data.products.map(product => ({
+        ...product,
+        price: Number(product.price) || 0
+      }));
+      setProducts(productsWithNumericPrices);
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
   useEffect(() => {
     getProductsData()
     getBlogsData()
@@ -252,7 +267,8 @@ const ShopContextProvider = (props) => {
     backendUrl,
     setToken, 
     token,
-    blogs
+    blogs,
+    refreshProducts
   };
 
   return (
