@@ -13,7 +13,6 @@ const Product = () => {
   const [addedToCart, setAddedToCart] = useState(false);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const foundProduct = products.find(
       item => item._id.toString() === productId.toString()
@@ -36,14 +35,34 @@ const Product = () => {
     navigate(`/collection?${key}=${encodeURIComponent(value)}`);
   };
 
+  const stock = productData?.stock ?? 0;
+  const currentInCart = productData ? (cartItems[productData._id] || 0) : 0;
+  const isOutOfStock = stock === 0;
+  const isMaxInCart = currentInCart >= stock && stock > 0;
+  const isButtonDisabled = isOutOfStock || isMaxInCart;
+
+  const getButtonText = () => {
+    if (isOutOfStock) return 'Нет в наличии';
+    if (addedToCart) return '✓ Добавлено';
+    if (isMaxInCart) return `Максимум в корзине (${currentInCart})`;
+    return 'В корзину';
+  }
+
+  const getButtonClass = () => {
+    if (isOutOfStock || isMaxInCart) {
+      return 'bg-gray-300 text-gray-500 cursor-not-allowed';
+    }
+    if (addedToCart) {
+      return 'bg-green-600 text-white';
+    }
+    return 'bg-primary text-white hover:bg-accent';
+  }
+
   const handleAddToCart = async () => {
-    if (!productData || isOutOfStock) return;
-
-    const currentInCart = cartItems[productData._id] || 0;
-    const stock = productData.stock ?? 0;
-
-    if (currentInCart >= stock) {
-      toast.error(`Максимум ${stock} шт. — уже в корзине`);
+    if (isButtonDisabled) {
+      if (isMaxInCart) {
+        toast.info(`Уже в корзине максимум: ${currentInCart} из ${stock} шт.`);
+      }
       return;
     }
 
@@ -57,9 +76,7 @@ const Product = () => {
   const getStockStatus = () => {
     if (!productData) return null;
 
-    const stock = productData.stock ?? 0;
-
-    if (stock === 0) {
+    if (isOutOfStock) {
       return {
         text: 'Нет в наличии',
         color: 'text-red-500',
@@ -99,20 +116,17 @@ const Product = () => {
   };
 
   const stockStatus = productData ? getStockStatus() : null;
-  const isOutOfStock = productData && (productData.stock ?? 0) === 0;
 
   return productData ? (
     <div className='pt-10 transition-opacity ease-in duration-500 opacity-100'>
       <div className='max-w-5xl mx-auto'>
 
-        {/* Заголовок */}
         <h1 className='font-bold text-3xl mb-6 text-primary'>
           {productData.title} {productData.desc}
         </h1>
 
         <div className='flex flex-col sm:flex-row gap-8 items-start'>
 
-          {/* Левая часть */}
           <div className='flex flex-col w-full sm:w-1/2 m-0'>
             <div className='w-full relative'>
               <img
@@ -132,22 +146,18 @@ const Product = () => {
               {formatPrice(productData.price)} {currency}
             </p>
 
+            {currentInCart > 0 && !isOutOfStock && (
+              <p className="text-center text-sm text-primary mt-2">
+                В корзине: {currentInCart} из {stock} шт.
+              </p>
+            )}
+
             <button
               onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className={`text-2xl mt-4 w-full font-bold py-3 transition-all duration-300 ${isOutOfStock
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : addedToCart
-                    ? 'bg-green-600 text-white'
-                    : 'bg-primary text-white hover:bg-accent'
-                }`}
+              disabled={isButtonDisabled}
+              className={`text-2xl mt-4 w-full font-bold py-3 transition-all duration-300 ${getButtonClass()}`}
             >
-              {isOutOfStock
-                ? 'Нет в наличии'
-                : addedToCart
-                  ? '✓ Добавлено'
-                  : 'В корзину'
-              }
+              {getButtonText()}
             </button>
 
             {isOutOfStock && (
@@ -155,9 +165,17 @@ const Product = () => {
                 Свяжитесь с нами для предзаказа
               </p>
             )}
+
+            {isMaxInCart && !isOutOfStock && (
+              <button
+                onClick={() => navigate('/cart')}
+                className="text-center text-sm text-accent mt-2 underline hover:no-underline"
+              >
+                Перейти в корзину
+              </button>
+            )}
           </div>
 
-          {/* Правая часть */}
           <div className='flex-1'>
             {productData.details.split('\n\n').map((paragraph, index) => (
               <p key={index} className='text-base text-primary mb-4 p-5 md:p-0'>
@@ -172,14 +190,12 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Заголовок секции */}
         <h2 className="section-title flex items-center justify-center font-literata font-bold text-primary text-[clamp(1.8rem,4vw,2.5rem)] leading-[71px] gap-8 relative max-w-[90%] mx-auto mb-2">
           <span className="flex-1 h-[3px] bg-primary"></span>
           Характеристики
           <span className="flex-1 h-[3px] bg-primary"></span>
         </h2>
 
-        {/* Контейнер характеристик */}
         <div className="max-w-5xl mx-auto w-full">
           <div className="bg-primary text-white w-full">
 
@@ -219,15 +235,16 @@ const Product = () => {
 
             <div className="flex justify-between py-4 px-4">
               <span className="font-medium">Наличие</span>
-              <span className={`font-semibold ${isOutOfStock
+              <span className={`font-semibold ${
+                isOutOfStock
                   ? 'text-red-300'
-                  : (productData.stock || 0) <= (productData.lowStockAlert || 5)
+                  : stock <= (productData.lowStockAlert || 5)
                     ? 'text-yellow-300'
                     : 'text-green-300'
-                }`}>
+              }`}>
                 {isOutOfStock
                   ? 'Нет в наличии'
-                  : `В наличии (${productData.stock} шт.)`
+                  : `В наличии (${stock} шт.)`
                 }
               </span>
             </div>

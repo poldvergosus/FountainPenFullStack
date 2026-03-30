@@ -29,7 +29,6 @@ const List = ({ token }) => {
     try {
       const response = await axios.post(backendUrl + '/api/product/remove', { id }, { headers: { token } })
       if (response.data.success) {
-        toast.success(response.data.message)
         await fetchList();
       } else {
         toast.error(response.data.message)
@@ -48,7 +47,6 @@ const List = ({ token }) => {
         { headers: { token } }
       )
       if (response.data.success) {
-        toast.success('Количество обновлено')
         await fetchList();
       } else {
         toast.error(response.data.message)
