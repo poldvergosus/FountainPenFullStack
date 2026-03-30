@@ -12,7 +12,7 @@ const SimilarProducts = ({
   category,
   brand,              
   subCategory,
-   currentId,
+  currentId,
   colorNames = [],   
   limit = 5
 }) => {
@@ -81,38 +81,70 @@ const SimilarProducts = ({
           0:   { slidesPerView: 2 },
           1024:{ slidesPerView: 3 },
         }}
-        className="overflow-hidden"
+        className="overflow-hidden similar-products-swiper"
       >
-        {related.map((product) => (
-          <SwiperSlide key={product._id}>
-            <Link
-              to={`/product/${product._id}`}
-              className="border-[4px] border-primary p-[0.2rem] w-full h-full flex flex-col"
-            >
-              <div className="border-[2px] border-primary p-4 flex flex-col flex-grow relative">
-                <span
-                  className="absolute top-4 left-4 border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center"
-                  style={{ width: '2.5rem', height: '1.8rem' }}
-                >
-                  {product.size}
-                </span>
+        {related.map((product) => {
+          const stock = product.stock ?? 0;
+          const isOutOfStock = stock === 0;
+          const isLowStock = stock > 0 && stock <= 5;
 
-                <img src={product.image} alt={product.title} className="w-full mb-4 mt-7" />
-                <div className="flex flex-col flex-grow">
-                  <h3 className="font-literata font-semibold text-lg text-primary mb-1 line-clamp-2">
-                    {product.title}
-                  </h3>
-                  <p className="font-literata text-sm text-primary mb-1 flex-grow">
-                    {product.desc}
-                  </p>
-                  <strong className="text-lg font-extrabold font-literata text-primary mt-3">
-                    {formatPrice(product.price)} {currency}
-                  </strong>
+          return (
+            <SwiperSlide key={product._id} className="!h-auto">
+              <Link
+                to={`/product/${product._id}`}
+                className={`border-[4px] border-primary p-[0.2rem] w-full h-full flex flex-col transition-all duration-300 ${
+                  isOutOfStock ? 'opacity-70 hover:opacity-100' : ''
+                }`}
+              >
+                <div className="border-[2px] border-primary p-4 flex flex-col flex-grow relative">
+                  {/* Размер пера */}
+                  <span
+                    className="absolute top-4 left-4 border-[0.2em] border-primary rounded-full text-primary text-xs font-regular flex items-center justify-center z-10"
+                    style={{ width: '2.5rem', height: '1.8rem' }}
+                  >
+                    {product.size}
+                  </span>
+
+                  <img 
+                    src={product.image} 
+                    alt={product.title} 
+                    className={`w-full mb-4 mt-7 transition-all duration-300 ${
+                      isOutOfStock ? 'grayscale group-hover:grayscale-0' : ''
+                    }`}
+                  />
+
+                  <div className="flex flex-col flex-grow">
+                    <h3 className="font-literata font-semibold text-lg text-primary mb-1 line-clamp-2">
+                      {product.title}
+                    </h3>
+                    <p className="font-literata text-sm text-primary mb-1 flex-grow">
+                      {product.desc}
+                    </p>
+                    
+                    <div className="flex justify-between items-end mt-3">
+                      <strong className={`text-lg font-extrabold font-literata ${
+                        isOutOfStock ? 'text-gray-400' : 'text-primary'
+                      }`}>
+                        {formatPrice(product.price)} {currency}
+                      </strong>
+                      
+                      {isOutOfStock && (
+                        <span className="text-xs font-semibold text-red-500">
+                          Нет в наличии
+                        </span>
+                      )}
+                      {isLowStock && (
+                        <span className="text-xs font-semibold text-yellow-600">
+                          Осталось {stock} шт.
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
+              </Link>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </section>
   )
