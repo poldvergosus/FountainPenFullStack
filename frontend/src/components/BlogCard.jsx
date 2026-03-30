@@ -1,10 +1,11 @@
-import React from "react";
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const BlogCard = ({ image, title, date }) => {
+const BlogCard = ({ slug, image, title, date }) => {
   return (
-    <a
-      href="/*"
-      className="group block border-t-4 border-primary transition-colors duration-300 group-hover:border-accent"
+    <Link 
+      to={`/blog/${slug}`}
+      className="group block border-t-4 border-primary transition-colors duration-300 hover:border-accent"
     >
       <div className="mb-2">
         <img
@@ -19,7 +20,7 @@ const BlogCard = ({ image, title, date }) => {
           {date}
         </div>
       </div>
-    </a>
+    </Link>
   );
 };
 

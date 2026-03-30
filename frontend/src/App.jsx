@@ -15,28 +15,30 @@ import Footer from './components/Footer'
 import SearchBar from './components/SearchBar'
 import NotFound from './pages/NotFound'
 import OrderSuccess from './pages/OrderSuccess'
+import BlogPost from './pages/BlogPost'
 
 const App = () => {
     return (
         <div className=''>
-            <Navbar/>
-            <SearchBar/>
+            <Navbar />
+            <SearchBar />
             <Routes>
-                <Route path='/' element={<Home/>}/>
-                <Route path='/collection' element={<Collection/>}/>
-                <Route path='/about' element={<About/>} />
-                <Route path='/contact' element={<Contact/>} />
-                <Route path='/product/:productId' element={<Product/>}/>
-                <Route path='/cart' element={<Cart/>}/>
-                <Route path='/login' element={<Login/>}/>
-                <Route path='/place-order' element={<PlaceOrder/>}/>
-                <Route path='/orders' element={<Orders/>}/>
-                <Route path='/blog' element={<Blog/>}/>
+                <Route path='/' element={<Home />} />
+                <Route path='/collection' element={<Collection />} />
+                <Route path='/about' element={<About />} />
+                <Route path='/contact' element={<Contact />} />
+                <Route path='/product/:productId' element={<Product />} />
+                <Route path='/cart' element={<Cart />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/place-order' element={<PlaceOrder />} />
+                <Route path='/orders' element={<Orders />} />
+                <Route path='/blog' element={<Blog />} />
                 <Route path='*' element={<NotFound />} />
-                <Route path='/collection/:brandName' element={<Collection/>}/>
+                <Route path='/collection/:brandName' element={<Collection />} />
                 <Route path='/order-success' element={<OrderSuccess />} />
+                <Route path='/blog/:slug' element={<BlogPost />} />
             </Routes>
-            <Footer/>
+            <Footer />
         </div>
     )
 }
