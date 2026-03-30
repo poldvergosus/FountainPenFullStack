@@ -27,8 +27,8 @@ const Orders = ({ token }) => {
   const statusHandler = async (event, orderId) => {
     try {
       const response = await axios.post(
-        backendUrl + '/api/order/status', 
-        { orderId, status: event.target.value }, 
+        backendUrl + '/api/order/status',
+        { orderId, status: event.target.value },
         { headers: { token } }
       )
       if (response.data.success) {
@@ -39,7 +39,6 @@ const Orders = ({ token }) => {
       toast.error(error.response?.data?.message || error.message)
     }
   }
-
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -52,6 +51,12 @@ const Orders = ({ token }) => {
     });
   }
 
+  const copyOrderId = (id) => {
+    navigator.clipboard.writeText(id).then(() => {
+      toast.info('ID заказа скопирован');
+    }).catch(() => {});
+  }
+
   useEffect(() => {
     fetchAllOrders();
   }, [token])
@@ -62,7 +67,7 @@ const Orders = ({ token }) => {
 
       <div className="flex flex-col gap-2">
 
-        <div className="hidden lg:grid grid-cols-[0.5fr_2fr_1fr_0.5fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm">
+        <div className="hidden lg:grid grid-cols-[0.7fr_2fr_1fr_0.5fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm">
           <b>Заказ</b>
           <b>Товары и адрес</b>
           <b>Детали</b>
@@ -77,15 +82,23 @@ const Orders = ({ token }) => {
         ) : (
           orders.map((order, index) => (
             <div
-              className="grid grid-cols-1 lg:grid-cols-[0.5fr_2fr_1fr_0.5fr_1fr] items-start gap-2 py-3 px-3 border text-sm hover:bg-gray-50 transition"
+              className="grid grid-cols-1 lg:grid-cols-[0.7fr_2fr_1fr_0.5fr_1fr] items-start gap-2 py-3 px-3 border text-sm hover:bg-gray-50 transition"
               key={index}
             >
-        
-              <div className="flex items-center gap-2">
-                <img className="w-8" src={assets.parcel_icon} alt="" />
-                <span className="text-xs text-gray-500 lg:hidden">
-                  #{order._id.slice(-6)}
-                </span>
+
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <img className="w-8" src={assets.parcel_icon} alt="" />
+                  <div className="flex flex-col">
+                    <span
+                      className="font-mono font-semibold text-primary cursor-pointer hover:text-accent transition"
+                      onClick={() => copyOrderId(order._id)}
+                      title={`Полный ID: ${order._id}\nНажмите, чтобы скопировать`}
+                    >
+                      #{order._id.slice(-6)}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div>
@@ -106,15 +119,13 @@ const Orders = ({ token }) => {
                 <p className="text-gray-600">
                   {order.address.city}, {order.address.street}
                 </p>
-                
-  
+
                 {order.comment && (
                   <p className="text-gray-700 mt-2 p-2 bg-yellow-50 border-l-2 border-yellow-400 text-sm">
                     <strong>Комментарий:</strong> {order.comment}
                   </p>
                 )}
-                
-       
+
                 {order.address.comment && !order.comment && (
                   <p className="text-gray-700 mt-2 p-2 bg-yellow-50 border-l-2 border-yellow-400 text-sm">
                     <strong>Комментарий:</strong> {order.address.comment}
@@ -122,7 +133,6 @@ const Orders = ({ token }) => {
                 )}
               </div>
 
-      
               <div>
                 <p>Товаров: {order.items.length}</p>
                 <p>Оплата: {order.paymentMethod}</p>
@@ -134,10 +144,8 @@ const Orders = ({ token }) => {
                 )}
               </div>
 
-          
               <p className="font-semibold">{order.amount}{currency}</p>
 
-      
               <select
                 onChange={(event) => statusHandler(event, order._id)}
                 className="border p-2 text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"

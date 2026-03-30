@@ -17,6 +17,7 @@ import NotFound from './pages/NotFound'
 import OrderSuccess from './pages/OrderSuccess'
 import BlogPost from './pages/BlogPost'
 import ScrollToTop from './components/ScrollToTop'
+import Profile from './pages/Profile'
 
 const App = () => {
     return (
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path='/collection/:brandName' element={<Collection />} />
                 <Route path='/order-success' element={<OrderSuccess />} />
                 <Route path='/blog/:slug' element={<BlogPost />} />
+                <Route path='/profile' element={<Profile />} />
             </Routes>
             <Footer />
         </div>

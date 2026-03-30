@@ -127,4 +127,43 @@ const adminLogin = async (req, res) => {
     }
 }
 
-export { loginUser, registerUser, adminLogin, getUserProfile, updateUserProfile }
+const changePassword = async (req, res) => {
+    try {
+        const { userId, currentPassword, newPassword } = req.body;
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.json({ success: false, message: "Пользователь не найден" });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isMatch) {
+            return res.json({ success: false, message: "Неверный текущий пароль" });
+        }
+
+        if (newPassword.length < 8) {
+            return res.json({ success: false, message: "Новый пароль должен быть минимум 8 символов" });
+        }
+
+        const isSame = await bcrypt.compare(newPassword, user.password);
+        if (isSame) {
+            return res.json({ success: false, message: "Новый пароль должен отличаться от текущего" });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+        await user.save();
+
+        res.json({ success: true, message: "Пароль успешно изменён" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export { loginUser, registerUser, adminLogin, getUserProfile, updateUserProfile, changePassword }

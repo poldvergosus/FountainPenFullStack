@@ -44,7 +44,6 @@ const Navbar = () => {
       <header className="relative py-5 max-w-[1700px] mx-auto">
         <div className="preload-images"></div>
 
-        {/* MOBILE */}
         <button
           className="burger-btn mobile-only"
           aria-label="Открыть меню"
@@ -55,7 +54,6 @@ const Navbar = () => {
           <span className="bar" />
         </button>
 
-        {/* MOBILE: burger (left) */}
         <button
           className="burger-btn mobile-only"
           aria-label="Открыть меню"
@@ -65,8 +63,6 @@ const Navbar = () => {
         >
           <span className="bar" />
         </button>
-
-        {/* MOBILE: compact actions (right) */}
         <div className="mobile-actions mobile-only">
           <button
             className="icon-btn"
@@ -88,12 +84,8 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        {/* Основной контент */}
         <div className="header-wrapper">
-          {/* Левая иконка */}
           <img src={assets.handLeft} alt="Левая рука" className="arm-icon" />
-
-          {/* Центр */}
           <div className="header-center">
             <div className="relative">
               <NavLink to="/">
@@ -119,11 +111,10 @@ const Navbar = () => {
             </nav>
           </div>
 
-          {/* Правая иконка */}
+      
           <img src={assets.handRight} alt="Правая рука" className="arm-icon" />
         </div>
 
-        {/* Кнопки справа */}
         <div className="main-actions">
           <button onClick={() => setShowSearch(prev => !prev)} className="search-button" aria-label="Поиск"></button>
 
@@ -163,7 +154,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* MOBILE slide-out menu */}
         <div
           id="mobile-nav"
           className={`mobile-nav ${isMenuOpen ? 'open' : ''}`}
