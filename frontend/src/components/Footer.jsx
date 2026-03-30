@@ -11,7 +11,7 @@ const navLinks = [
 const infoLinks = [
   { label: "О нас", href: "/about" },
   { label: "F.A.Q", href: "/*" },
-  { label: "Статьи", href: "/*" },
+  { label: "Статьи", href: "/blog" },
   { label: "Контакты", href: "/*" },
   { label: "Возврат", href: "/*" },
 ];
