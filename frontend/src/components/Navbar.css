@@ -427,6 +427,7 @@
     gap: 0;
     z-index: 10;
     padding-right: 1rem;
+     overflow: visible;
 }
 
 .search-button-wrapper {
@@ -531,4 +532,21 @@
     margin: 2px auto 0;
     border-top: 3px solid var(--color-primary);
     height: 0;
+}
+
+header.relative {
+    overflow: visible !important;
+}
+
+.main-actions {
+    overflow: visible !important;
+}
+
+.main-actions .group {
+    position: relative;
+    overflow: visible !important;
+}
+
+.main-actions .group > div[class*="group-hover"] {
+    z-index: 9998;
 }

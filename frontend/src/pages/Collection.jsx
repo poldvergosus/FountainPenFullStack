@@ -228,9 +228,11 @@ const Collection = () => {
   }, [sliderRef.current]);
 
   return (
-    <div className="w-full px-4 pt-10">
-      <div className="flex flex-col 2xl:flex-row gap-10 max-w-[1760px] mx-auto">
-        <div className="w-full 2xl:max-w-[20rem]">
+    <div className="w-full px-4 pt-10 relative">
+      <div className="flex flex-col 2xl:flex-row items-start gap-10 max-w-[1760px] mx-auto">
+        
+        <div className="w-full 2xl:max-w-[20rem] 2xl:sticky 2xl:top-[20px] z-10 2xl:max-h-[calc(100vh-140px)] 2xl:overflow-y-auto bg-white pr-2 custom-scrollbar">
+          
           <p
             className='font-bold flex items-center cursor-pointer gap-2 mb-3 text-primary font-literata'
             onClick={() => setShowFilter(!showFilter)}
@@ -238,8 +240,7 @@ const Collection = () => {
             ФИЛЬТРЫ <span className='2xl:hidden'>{showFilter ? '▲' : '▼'}</span>
           </p>
 
-          <div className={`sticky top-0 z-10 border-2 border-primary ${showFilter ? 'block' : 'hidden'} 2xl:block p-4`}>
-
+          <div className={`border-2 border-primary ${showFilter ? 'block' : 'hidden'} 2xl:block p-4`}>
    
             <Disclosure defaultOpen={true}>
               {({ open }) => (
@@ -272,7 +273,6 @@ const Collection = () => {
               )}
             </Disclosure>
 
-            {/* Цена */}
             <div className="border-b border-primary">
               <Disclosure defaultOpen={true}>
                 {({ open }) => {

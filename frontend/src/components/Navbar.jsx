@@ -127,29 +127,29 @@ const Navbar = () => {
         <div className="main-actions">
           <button onClick={() => setShowSearch(prev => !prev)} className="search-button" aria-label="Поиск"></button>
 
-          <div className="group relative">
-            <div className="flex flex-col items-center justify-end w-[100px] h-[100%] text-primary ml-[30px] mr-[30px]">
-              <img
-                onClick={() => token ? logout() : navigate('/login')}
-                src={assets.login_closed}
-                alt="Логин"
-                className="cursor-pointer w-[65px] h-[65px] m-3"
-              />
-              <span className="text-sm leading-[18px] font-semibold">
-                {token ? 'Выйти' : 'Войти'}
-              </span>
+<div className="group relative">
+  <div className="flex flex-col items-center justify-end w-[100px] h-[100%] text-primary ml-[30px] mr-[30px]">
+    <img
+      onClick={() => token ? logout() : navigate('/login')}
+      src={assets.login_closed}
+      alt="Логин"
+      className="cursor-pointer w-[65px] h-[65px] m-3"
+    />
+    <span className="text-sm leading-[18px] font-semibold">
+      {token ? 'Выйти' : 'Войти'}
+    </span>
 
-              {token && (
-                <div className="group-hover:block hidden absolute dropdown-menu right-0 top-full pt-4">
-                  <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100">
-                    <p className="cursor-pointer hover:text-accent" onClick={() => navigate('/profile')}>Профиль</p>
-                    <p className="cursor-pointer hover:text-accent" onClick={() => navigate('/orders')}>Заказы</p>
-                    <p className="cursor-pointer hover:text-accent" onClick={logout}>Выйти</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+    {token && (
+      <div className="group-hover:block hidden absolute left-1/2 -translate-x-1/2 top-full pt-4 z-50">
+        <div className="grid gap-2 py-3 px-5 bg-slate-100 shadow-md rounded w-[140px] text-center">
+          <p className="cursor-pointer hover:text-accent m-0" onClick={() => navigate('/profile')}>Профиль</p>
+          <p className="cursor-pointer hover:text-accent m-0" onClick={() => navigate('/orders')}>Заказы</p>
+          <p className="cursor-pointer hover:text-accent m-0" onClick={logout}>Выйти</p>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
 
           <div className="cart-button-wrapper">
             <NavLink to="/cart">

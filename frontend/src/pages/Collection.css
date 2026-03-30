@@ -3,13 +3,11 @@
   height: 10px;
 }
 
-/* Заливка между ползунками */
 #slider-round .noUi-connect {
   background: var(--color-primary);
   border-radius: 10px;
 }
 
-/* Область слайдера (фон) */
 #slider-round .noUi-target {
   background: #e5e7eb; 
   border-radius: 10px;
