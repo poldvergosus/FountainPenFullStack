@@ -16,10 +16,12 @@ import SearchBar from './components/SearchBar'
 import NotFound from './pages/NotFound'
 import OrderSuccess from './pages/OrderSuccess'
 import BlogPost from './pages/BlogPost'
+import ScrollToTop from './components/ScrollToTop'
 
 const App = () => {
     return (
         <div className=''>
+            <ScrollToTop />
             <Navbar />
             <SearchBar />
             <Routes>
