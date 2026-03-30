@@ -14,16 +14,34 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [token, setToken] = useState("")
   const [blogs, setBlogs] = useState([]);
+  const [token, setToken] = useState("")
 
-  const addToCart = async (itemId) => {
-    let cartData = structuredClone(cartItems);
-    if (cartData[itemId]) {
-      cartData[itemId] += 1;
-    } else {
-      cartData[itemId] = 1
+
+  const addToCart = async (itemId, quantity = 1) => {
+    const product = products.find(p => p._id === itemId);
+    
+    if (!product) {
+      toast.error('Товар не найден');
+      return false;
     }
+
+    const stock = product.stock ?? 0;
+    const currentInCart = cartItems[itemId] || 0;
+    const newQuantity = currentInCart + quantity;
+
+    if (stock === 0) {
+      toast.error('Товар закончился');
+      return false;
+    }
+
+    if (newQuantity > stock) {
+      toast.error(`Доступно только ${stock} шт.`);
+      return false;
+    }
+
+    let cartData = structuredClone(cartItems);
+    cartData[itemId] = newQuantity;
     setCartItems(cartData);
 
     if (token) {
@@ -34,6 +52,8 @@ const ShopContextProvider = (props) => {
         toast.error(error.message)
       }
     }
+
+    return true;
   }
 
   const getCartCount = () => {
@@ -45,8 +65,34 @@ const ShopContextProvider = (props) => {
   };
 
   const updateQuantity = async (itemId, quantity) => {
+
+    const product = products.find(p => p._id === itemId);
+    
+    if (!product) {
+      toast.error('Товар не найден');
+      return false;
+    }
+
+    const stock = product.stock ?? 0;
+
+
+    if (quantity > stock) {
+      toast.error(`Доступно только ${stock} шт.`);
+      quantity = stock; // Ставим максимум
+    }
+
+
+    if (quantity <= 0) {
+      quantity = 0;
+    }
+
     let cartData = structuredClone(cartItems);
     cartData[itemId] = quantity;
+    
+    if (quantity === 0) {
+      delete cartData[itemId];
+    }
+    
     setCartItems(cartData);
 
     if (token) {
@@ -57,49 +103,71 @@ const ShopContextProvider = (props) => {
         toast.error(error.message)
       }
     }
+
+    return true;
+  }
+
+
+  const getAvailableStock = (itemId) => {
+    const product = products.find(p => p._id === itemId);
+    return product ? (product.stock ?? 0) : 0;
+  }
+
+
+  const validateCart = () => {
+    let cartData = structuredClone(cartItems);
+    let hasChanges = false;
+
+    for (const itemId in cartData) {
+      const product = products.find(p => p._id === itemId);
+      
+      if (!product) {
+        delete cartData[itemId];
+        hasChanges = true;
+        continue;
+      }
+
+      const stock = product.stock ?? 0;
+      
+      if (cartData[itemId] > stock) {
+        if (stock === 0) {
+          delete cartData[itemId];
+          toast.warning(`"${product.title}" закончился и удален из корзины`);
+        } else {
+          cartData[itemId] = stock;
+          toast.warning(`"${product.title}" — количество уменьшено до ${stock} шт.`);
+        }
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) {
+      setCartItems(cartData);
+    }
   }
 
   const getCartAmount = () => {
     let totalAmount = 0;
 
-    console.log('=== РАСЧЕТ СУММЫ КОРЗИНЫ ===');
-    console.log('Cart items:', cartItems);
-    console.log('Products count:', products.length);
-
     for (const itemId in cartItems) {
       const quantity = cartItems[itemId];
-
+      
       if (quantity > 0) {
         const itemInfo = products.find(
           (product) => product._id.toString() === itemId.toString()
         );
-
+        
         if (itemInfo) {
           const price = Number(itemInfo.price);
           const qty = Number(quantity);
-
-          console.log(`Product: ${itemInfo.title}`);
-          console.log(`Price: ${price} (type: ${typeof itemInfo.price})`);
-          console.log(`Quantity: ${qty}`);
-
+          
           if (!isNaN(price) && !isNaN(qty) && price > 0 && qty > 0) {
-            const subtotal = price * qty;
-            console.log(`Subtotal: ${subtotal}`);
-            totalAmount += subtotal;
-          } else {
-            console.warn(` Invalid price or quantity for product ${itemInfo.title}:`, {
-              originalPrice: itemInfo.price,
-              price,
-              qty
-            });
+            totalAmount += price * qty;
           }
-        } else {
-          console.warn(` Product not found for ID: ${itemId}`);
         }
       }
     }
 
-    console.log('Total amount:', totalAmount);
     return totalAmount;
   };
 
@@ -111,23 +179,9 @@ const ShopContextProvider = (props) => {
           ...product,
           price: Number(product.price) || 0
         }));
-
         setProducts(productsWithNumericPrices);
-        console.log('Products loaded:', productsWithNumericPrices.length);
       } else {
         toast.error(response.data.message)
-      }
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message)
-    }
-  }
-
-  const getUserCart = async (token) => {
-    try {
-      const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token } })
-      if (response.data.success) {
-        setCartItems(response.data.cartData)
       }
     } catch (error) {
       console.log(error)
@@ -149,10 +203,28 @@ const ShopContextProvider = (props) => {
     }
   }
 
+  const getUserCart = async (token) => {
+    try {
+      const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token } })
+      if (response.data.success) {
+        setCartItems(response.data.cartData)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
   useEffect(() => {
     getProductsData()
     getBlogsData()
   }, [])
+
+  useEffect(() => {
+    if (products.length > 0 && Object.keys(cartItems).length > 0) {
+      validateCart();
+    }
+  }, [products])
 
   useEffect(() => {
     if (!token && localStorage.getItem('token')) {
@@ -161,25 +233,24 @@ const ShopContextProvider = (props) => {
     }
   }, [])
 
-
-
   const value = {
-    products,
+    products, 
     currency,
     delivery_fee,
-    search,
-    setSearch,
-    showSearch,
+    search, 
+    setSearch, 
+    showSearch, 
     setShowSearch,
-    cartItems,
-    addToCart,
+    cartItems, 
+    addToCart, 
     setCartItems,
-    getCartCount,
+    getCartCount, 
     updateQuantity,
-    getCartAmount,
-    navigate,
+    getCartAmount, 
+    getAvailableStock, 
+    navigate, 
     backendUrl,
-    setToken,
+    setToken, 
     token,
     blogs
   };

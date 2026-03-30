@@ -49,6 +49,8 @@ const Add = ({ token }) => {
 
   const [details, setDetails] = useState("")
 
+  const [stock, setStock] = useState(0)
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -63,6 +65,7 @@ const Add = ({ token }) => {
       formData.append("nibmaterial", nibmaterial);
       formData.append("size", size);
       formData.append("details", details);
+      formData.append("stock", stock);
 
       formData.append("colors", JSON.stringify(selectedColors.map(idx => colors[idx])));
 
@@ -120,6 +123,19 @@ const Add = ({ token }) => {
       <div className='w-full'>
         <p className='mb-2'>Цена</p>
         <input onChange={(e) => setPrice(e.target.value)} value={price} className='w-full px-3 py-2 sm:w-[200px]' type="Number" placeholder='6020' required />
+      </div>
+
+      <div className='w-full'>
+        <p className='mb-2'>Количество на складе</p>
+        <input
+          onChange={(e) => setStock(e.target.value)}
+          value={stock}
+          className='w-full px-3 py-2 sm:w-[200px]'
+          type="Number"
+          min="0"
+          placeholder='0'
+          required
+        />
       </div>
 
       <div className='w-full flex gap-2 mt-2'>

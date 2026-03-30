@@ -186,7 +186,6 @@ const AddBlog = ({ token }) => {
                 </button>
               </div>
             )}
-            {/* ✅ Убрали required */}
             <input 
               onChange={(e) => setImage(e.target.files[0])} 
               type="file" 

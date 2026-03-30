@@ -17,9 +17,12 @@ const productSchema = new mongoose.Schema({
             isTransparent: { type: Boolean, default: false }
         }
     ],
-    details: { type: String }
+    details: { type: String },
+    stock: { type: Number, required: true, default: 0 }, 
+    lowStockAlert: { type: Number, default: 5 },
+    date: { type: Number, required: true }
 });
 
-const productModel =mongoose.models.product ||  mongoose.model("product",productSchema);
+const productModel = mongoose.models.product || mongoose.model("product", productSchema);
 
 export default productModel

@@ -36,6 +36,7 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
   const [nibmaterial, setNibmaterial] = useState(product.nibmaterial || false)
   const [size, setSize] = useState(product.size || "EF")
   const [details, setDetails] = useState(product.details || "")
+  const [stock, setStock] = useState(product.stock || 0)
 
   // Цвета
   const [colors, setColors] = useState(() => {
@@ -45,7 +46,7 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
 
   const [selectedColors, setSelectedColors] = useState(() => {
     if (!product.colors || product.colors.length === 0) return [];
-    
+
     return product.colors.map(productColor => {
       const index = colors.findIndex(c => c.hex === productColor.hex && c.name === productColor.name);
       return index !== -1 ? index : -1;
@@ -58,7 +59,7 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    
+
     try {
       const formData = new FormData()
 
@@ -73,8 +74,8 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
       formData.append("size", size);
       formData.append("details", details);
       formData.append("colors", JSON.stringify(selectedColors.map(idx => colors[idx])));
+      formData.append("stock", stock);
 
-      // Если загружено новое изображение
       if (image1) {
         formData.append("image1", image1)
       }
@@ -115,16 +116,16 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             <p className='mb-2 font-medium'>Изображение товара</p>
             <div className='flex gap-4 items-center'>
               <label htmlFor="edit-image1" className="cursor-pointer">
-                <img 
-                  className='w-32 h-32 object-contain border rounded' 
-                  src={!image1 ? (product.image || assets.upload_area) : URL.createObjectURL(image1)} 
-                  alt="" 
+                <img
+                  className='w-32 h-32 object-contain border rounded'
+                  src={!image1 ? (product.image || assets.upload_area) : URL.createObjectURL(image1)}
+                  alt=""
                 />
-                <input 
-                  onChange={(e) => setImage(e.target.files[0])} 
-                  type="file" 
-                  id='edit-image1' 
-                  hidden 
+                <input
+                  onChange={(e) => setImage(e.target.files[0])}
+                  type="file"
+                  id='edit-image1'
+                  hidden
                 />
               </label>
               <div className="text-sm text-gray-600">
@@ -137,39 +138,52 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
           {/* Название */}
           <div>
             <p className='mb-2 font-medium'>Название продукта</p>
-            <input 
-              onChange={(e) => setTitle(e.target.value)} 
-              value={title} 
-              className='w-full px-3 py-2 border rounded' 
-              type="text" 
-              placeholder='Название' 
-              required 
+            <input
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+              className='w-full px-3 py-2 border rounded'
+              type="text"
+              placeholder='Название'
+              required
             />
           </div>
 
           {/* Подзаголовок */}
           <div>
             <p className='mb-2 font-medium'>Подзаголовок</p>
-            <input 
-              onChange={(e) => setDesc(e.target.value)} 
-              value={desc} 
-              className='w-full px-3 py-2 border rounded' 
-              type="text" 
-              placeholder='Подзаголовок' 
-              required 
+            <input
+              onChange={(e) => setDesc(e.target.value)}
+              value={desc}
+              className='w-full px-3 py-2 border rounded'
+              type="text"
+              placeholder='Подзаголовок'
+              required
             />
           </div>
 
           {/* Цена */}
           <div>
             <p className='mb-2 font-medium'>Цена</p>
-            <input 
-              onChange={(e) => setPrice(e.target.value)} 
-              value={price} 
-              className='w-full px-3 py-2 border rounded sm:w-[200px]' 
-              type="Number" 
-              placeholder='6020' 
-              required 
+            <input
+              onChange={(e) => setPrice(e.target.value)}
+              value={price}
+              className='w-full px-3 py-2 border rounded sm:w-[200px]'
+              type="Number"
+              placeholder='6020'
+              required
+            />
+          </div>
+
+          <div>
+            <p className='mb-2 font-medium'>Количество на складе</p>
+            <input
+              onChange={(e) => setStock(e.target.value)}
+              value={stock}
+              className='w-full px-3 py-2 border rounded sm:w-[200px]'
+              type="Number"
+              min="0"
+              placeholder='0'
+              required
             />
           </div>
 
@@ -200,9 +214,9 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
             <div>
               <p className='mb-2 font-medium'>Категория</p>
-              <select 
-                onChange={(e) => setCategory(e.target.value)} 
-                value={category} 
+              <select
+                onChange={(e) => setCategory(e.target.value)}
+                value={category}
                 className='w-full px-3 py-2 border rounded'
               >
                 <option value="Перьевые ручки">Перьевые ручки</option>
@@ -214,9 +228,9 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
 
             <div>
               <p className='mb-2 font-medium'>Размер пера</p>
-              <select 
-                onChange={(e) => setSize(e.target.value)} 
-                value={size} 
+              <select
+                onChange={(e) => setSize(e.target.value)}
+                value={size}
                 className='w-full px-3 py-2 border rounded'
               >
                 <option value="EF">Extra Fine</option>
@@ -233,9 +247,9 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
           {/* Бренд */}
           <div>
             <p className='mb-2 font-medium'>Бренд</p>
-            <select 
-              onChange={(e) => setBrand(e.target.value)} 
-              value={brand} 
+            <select
+              onChange={(e) => setBrand(e.target.value)}
+              value={brand}
               className='w-full px-3 py-2 border rounded'
             >
               {BRANDS.map(item => <option key={item.value} value={item.value}>{item.label}</option>)}
@@ -245,33 +259,33 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
           {/* Описание */}
           <div>
             <p className='mb-2 font-medium'>Описание</p>
-            <textarea 
-              onChange={(e) => setDetails(e.target.value)} 
-              value={details} 
-              className='w-full px-3 py-2 border rounded' 
+            <textarea
+              onChange={(e) => setDetails(e.target.value)}
+              value={details}
+              className='w-full px-3 py-2 border rounded'
               rows="4"
-              placeholder='История производства, сведения о производителе' 
-              required 
+              placeholder='История производства, сведения о производителе'
+              required
             />
           </div>
 
           {/* Цвета */}
-          <ColorPicker 
-            colors={colors} 
-            setColors={setColors} 
+          <ColorPicker
+            colors={colors}
+            setColors={setColors}
             selected={selectedColors}
-            setSelected={setSelectedColors} 
+            setSelected={setSelectedColors}
           />
 
           {/* Кнопки */}
           <div className="flex gap-3 pt-4">
-            <button 
-              type='submit' 
+            <button
+              type='submit'
               className='px-8 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded transition'
             >
               Сохранить изменения
             </button>
-            <button 
+            <button
               type='button'
               onClick={onClose}
               className='px-8 py-3 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded transition'

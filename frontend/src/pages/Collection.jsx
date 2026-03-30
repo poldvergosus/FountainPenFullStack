@@ -10,18 +10,16 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 const Collection = () => {
   // STATE
-
   const [isPriceOpen, setIsPriceOpen] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
-  const [inStockOnly, setInStockOnly] = useState(true); // пока заглушка
+  const [inStockOnly, setInStockOnly] = useState(false); 
   const [sortOrder, setSortOrder] = useState('price-asc');
   const [visibleCount, setVisibleCount] = useState(12);
 
-  //  ДАННЫЕ ПРОДУКТОВ
-
+  // ДАННЫЕ ПРОДУКТОВ
   const { products = [] } = useContext(ShopContext) || {};
   const { search, showSearch } = useContext(ShopContext);
   const location = useLocation();
@@ -31,7 +29,7 @@ const Collection = () => {
   const querySize = queryParams.get('size') || null;
   const queryBrand = queryParams.get('brand') || null;
 
-  //  Ценовой диапазон
+  // Ценовой диапазон
   const prices = products.map(p => Number(p.price)).filter(p => !isNaN(p));
   const minPrice = prices.length ? Math.min(...prices) : 0;
   const maxPrice = prices.length ? Math.max(...prices) : 100000;
@@ -41,6 +39,7 @@ const Collection = () => {
   const allBrands = useMemo(() => {
     return [...new Set(products.map(p => p.brand).filter(Boolean))];
   }, [products]);
+  
   const allSizes = useMemo(() => {
     return [...new Set(products.map(p => p.size).filter(Boolean))];
   }, [products]);
@@ -53,13 +52,23 @@ const Collection = () => {
       );
   }, [products]);
 
-  //  ФИЛЬТРАЦИЯ И СОРТИРОВКА
+
+  const inStockCount = useMemo(() => {
+    return products.filter(p => (p.stock ?? 0) > 0).length;
+  }, [products]);
+
+  // ФИЛЬТРАЦИЯ И СОРТИРОВКА
   const searchWords = querySearch.toLowerCase().split(" ").filter(Boolean);
 
   const filteredProducts = useMemo(() => {
     const filtered = products.filter((p) => {
       const price = Number(p.price);
+      const stock = p.stock ?? 0;
+      
       const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
+
+  
+      const matchesStock = !inStockOnly || stock > 0;
 
       const matchesBrand =
         selectedBrands.length === 0 ||
@@ -68,22 +77,23 @@ const Collection = () => {
         );
 
       const matchesSize = selectedSizes.length === 0 || selectedSizes.includes(p.size);
+      
       const matchesColor =
         selectedColors.length === 0 ||
         (p.colors && p.colors.some(color => selectedColors.includes(color.name)));
 
       const combinedText = `
-      ${p.title}
-      ${p.desc}
-      ${p.brand}
-      ${p.size}
-    `.toLowerCase();
+        ${p.title}
+        ${p.desc}
+        ${p.brand}
+        ${p.size}
+      `.toLowerCase();
 
       const matchesSearch =
         searchWords.length === 0 ||
         searchWords.every((word) => combinedText.includes(word));
 
-      return matchesPrice && matchesBrand && matchesSize && matchesColor && matchesSearch;
+      return matchesPrice && matchesBrand && matchesSize && matchesColor && matchesSearch && matchesStock;
     });
 
     return [...filtered].sort((a, b) => {
@@ -101,13 +111,14 @@ const Collection = () => {
     selectedColors,
     sortOrder,
     searchWords,
+    inStockOnly, 
   ]);
 
   const resetFilters = () => {
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
-    setInStockOnly(true);
+    setInStockOnly(false); 
     setPriceRange([minPrice, maxPrice]);
   };
 
@@ -219,7 +230,6 @@ const Collection = () => {
   return (
     <div className="w-full px-4 pt-10">
       <div className="flex flex-col 2xl:flex-row gap-10 max-w-[1760px] mx-auto">
-        {/* ЛЕВЫЙ ФИЛЬТР */}
         <div className="w-full 2xl:max-w-[20rem]">
           <p
             className='font-bold flex items-center cursor-pointer gap-2 mb-3 text-primary font-literata'
@@ -230,6 +240,7 @@ const Collection = () => {
 
           <div className={`sticky top-0 z-10 border-2 border-primary ${showFilter ? 'block' : 'hidden'} 2xl:block p-4`}>
 
+   
             <Disclosure defaultOpen={true}>
               {({ open }) => (
                 <div className="border-b border-primary mb-2">
@@ -261,6 +272,7 @@ const Collection = () => {
               )}
             </Disclosure>
 
+            {/* Цена */}
             <div className="border-b border-primary">
               <Disclosure defaultOpen={true}>
                 {({ open }) => {
@@ -322,14 +334,21 @@ const Collection = () => {
                         type="checkbox"
                         checked={inStockOnly}
                         onChange={() => setInStockOnly(!inStockOnly)}
+                        className="w-4 h-4 accent-primary cursor-pointer"
                       />
-                      В наличии
+                      <span className="flex items-center gap-2">
+                        Только в наличии
+                        <span className="text-xs text-gray-500">
+                          ({inStockCount})
+                        </span>
+                      </span>
                     </label>
                   </Disclosure.Panel>
                 </div>
               )}
             </Disclosure>
 
+    
             <Disclosure>
               {({ open }) => (
                 <div className="border-b border-primary mb-6">
@@ -363,7 +382,7 @@ const Collection = () => {
                     <span>{open ? '−' : '+'}</span>
                   </Disclosure.Button>
 
-                  <Disclosure.Panel className="pl-3 flex flex-wrap gap-2 mt-2 mb-6  relative overflow-hidden">
+                  <Disclosure.Panel className="pl-3 flex flex-wrap gap-2 mt-2 mb-6 relative overflow-hidden">
                     {allColors.map((color) => (
                       <label
                         key={color.name}
@@ -398,13 +417,12 @@ const Collection = () => {
                               : 'none'
                           }}
                         >
-                          {selectedColors.includes(color.name)
-                          }
+                          {selectedColors.includes(color.name)}
                         </span>
                         <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2
-  px-2 py-1 text-xs text-white bg-gray-800 rounded
-  opacity-0 group-hover:opacity-100 transition-opacity
-  pointer-events-none z-10 text-center text-ellipsis overflow-hidden max-w-[120px] break-words">
+                          px-2 py-1 text-xs text-white bg-gray-800 rounded
+                          opacity-0 group-hover:opacity-100 transition-opacity
+                          pointer-events-none z-10 text-center text-ellipsis overflow-hidden max-w-[120px] break-words">
                           {color.name}
                         </span>
                       </label>
@@ -413,6 +431,7 @@ const Collection = () => {
                 </div>
               )}
             </Disclosure>
+
             <div className="mt-4 flex justify-start">
               <button
                 onClick={resetFilters}
@@ -425,7 +444,13 @@ const Collection = () => {
         </div>
 
         <div className="flex-grow min-w-0">
-          <div className="flex justify-end mb-4">
+
+          <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+            <p className="text-sm text-gray-600">
+              Найдено: <span className="font-semibold text-primary">{filteredProducts.length}</span> товаров
+              {inStockOnly && <span className="text-green-600 ml-1">(только в наличии)</span>}
+            </p>
+            
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
@@ -441,6 +466,7 @@ const Collection = () => {
               Результаты поиска для: <span className="italic font-semibold">{querySearch}</span>
             </h2>
           )}
+          
           {filteredProducts.length > 0 ? (
             <>
               <ProductGrid
@@ -466,14 +492,27 @@ const Collection = () => {
                 Товар не найден
               </p>
               <p className="text-sm md:text-base mb-6 opacity-80">
-                Попробуйте изменить фильтры или вернуться в каталог.
+                {inStockOnly 
+                  ? 'Попробуйте отключить фильтр "Только в наличии" или изменить другие фильтры.'
+                  : 'Попробуйте изменить фильтры или вернуться в каталог.'
+                }
               </p>
-              <button
-                onClick={() => navigate('/collection')}
-                className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white transition"
-              >
-                Перейти в каталог
-              </button>
+              <div className="flex gap-3 justify-center flex-wrap">
+                {inStockOnly && (
+                  <button
+                    onClick={() => setInStockOnly(false)}
+                    className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white transition"
+                  >
+                    Показать все товары
+                  </button>
+                )}
+                <button
+                  onClick={resetFilters}
+                  className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:bg-primary hover:text-white transition"
+                >
+                  Сбросить фильтры
+                </button>
+              </div>
             </div>
           )}
         </div>

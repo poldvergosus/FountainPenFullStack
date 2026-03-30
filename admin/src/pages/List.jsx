@@ -25,7 +25,7 @@ const List = ({ token }) => {
 
   const removeProduct = async (id) => {
     if (!window.confirm('Вы уверены, что хотите удалить этот товар?')) return;
-    
+
     try {
       const response = await axios.post(backendUrl + '/api/product/remove', { id }, { headers: { token } })
       if (response.data.success) {
@@ -40,212 +40,211 @@ const List = ({ token }) => {
     }
   }
 
+  const updateStock = async (id, newStock) => {
+    try {
+      const response = await axios.post(
+        backendUrl + '/api/product/update-stock',
+        { id, stock: Number(newStock) },
+        { headers: { token } }
+      )
+      if (response.data.success) {
+        toast.success('Количество обновлено')
+        await fetchList();
+      } else {
+        toast.error(response.data.message)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
   useEffect(() => {
     fetchList()
   }, [])
 
+  const totalStock = list.reduce((sum, item) => sum + (item.stock || 0), 0);
+  const outOfStock = list.filter(item => (item.stock || 0) === 0).length;
+  const lowStock = list.filter(item => (item.stock || 0) > 0 && (item.stock || 0) <= (item.lowStockAlert || 5)).length;
+
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
         <h1 className='text-2xl font-bold text-gray-800'>Список товаров</h1>
-        <span className="text-sm text-gray-600">Всего: {list.length}</span>
+        <div className="flex gap-4 text-sm">
+          <span className="text-gray-600">Всего: {list.length}</span>
+          <span className="text-green-600">На складе: {totalStock} шт.</span>
+          {lowStock > 0 && (
+            <span className="text-yellow-600">⚠️ Заканчиваются: {lowStock}</span>
+          )}
+          {outOfStock > 0 && (
+            <span className="text-red-600">❌ Нет в наличии: {outOfStock}</span>
+          )}
+        </div>
       </div>
 
-      {/* Desktop Table */}
+      {/* Desktop */}
       <div className='hidden lg:block overflow-x-auto'>
         <div className="min-w-[1200px]">
-          {/* Header */}
-          <div className='grid grid-cols-[80px_2fr_2fr_1fr_1fr_1.5fr_1fr_100px] gap-3 items-center py-3 px-4 bg-gray-100 border rounded-t-lg text-sm font-semibold text-gray-700'>
+          <div className='grid grid-cols-[80px_2fr_1fr_1fr_1fr_1fr_120px_100px] gap-3 items-center py-3 px-4 bg-gray-100 border rounded-t-lg text-sm font-semibold text-gray-700'>
             <div>Фото</div>
             <div>Название</div>
-            <div>Описание</div>
             <div>Цена</div>
             <div>Бренд</div>
             <div>Категория</div>
-            <div className="text-center">Теги</div>
+            <div>Теги</div>
+            <div className="text-center">Склад</div>
             <div className="text-center">Действия</div>
           </div>
 
-          {/* Rows */}
-          {list.map((item, index) => (
-            <div 
-              className='grid grid-cols-[80px_2fr_2fr_1fr_1fr_1.5fr_1fr_100px] gap-3 items-center py-3 px-4 border-x border-b text-sm hover:bg-gray-50 transition' 
-              key={index}
-            >
-              {/* Изображение */}
-              <img 
-                className='w-16 h-16 object-cover rounded border' 
-                src={item.image} 
-                alt={item.title} 
-              />
+          {list.map((item, index) => {
+            const stock = item.stock || 0;
+            const isOutOfStock = stock === 0;
+            const isLowStock = stock > 0 && stock <= (item.lowStockAlert || 5);
 
-              {/* Название + подзаголовок */}
-              <div>
-                <p className="font-medium text-gray-800">{item.title}</p>
-                <p className="text-xs text-gray-500">{item.desc}</p>
-              </div>
-
-              {/* Детали (сокращенные) */}
-              <p
-                className={`text-gray-600 text-xs cursor-pointer ${
-                  expandedIndex === index ? 'whitespace-normal' : 'line-clamp-2'
-                }`}
-                title="Нажмите чтобы развернуть"
-                onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+            return (
+              <div 
+                className={`grid grid-cols-[80px_2fr_1fr_1fr_1fr_1fr_120px_100px] gap-3 items-center py-3 px-4 border-x border-b text-sm transition
+                  ${isOutOfStock ? 'bg-red-50' : isLowStock ? 'bg-yellow-50' : 'hover:bg-gray-50'}
+                `}
+                key={index}
               >
-                {item.details}
-              </p>
+                <img className='w-16 h-16 object-cover rounded border' src={item.image} alt={item.title} />
 
-              {/* Цена */}
-              <p className="font-semibold text-gray-800">{item.price}{currency}</p>
+                <div>
+                  <p className="font-medium text-gray-800">{item.title}</p>
+                  <p className="text-xs text-gray-500">{item.desc}</p>
+                </div>
 
-              {/* Бренд */}
-              <p className="text-gray-600">{item.brand}</p>
+                <p className="font-semibold">{item.price}{currency}</p>
+                <p className="text-gray-600">{item.brand}</p>
+                <p className="text-gray-600 text-xs">{item.category}</p>
 
-              {/* Категория */}
-              <p className="text-gray-600 text-xs">{item.category}</p>
+                <div className="flex flex-col gap-1 text-xs">
+                  {item.popular && (
+                    <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full w-fit">⭐ Топ</span>
+                  )}
+                  <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full w-fit">{item.size}</span>
+                </div>
 
-              {/* Теги (компактные) */}
-              <div className="flex flex-col gap-1 items-center text-xs">
-                {item.popular && (
-                  <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-[10px]">
-                    ⭐ Топ
-                  </span>
-                )}
-                {item.nibmaterial && (
-                  <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-[10px]">
-                    🏆 Золото
-                  </span>
-                )}
-                <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-[10px]">
-                  {item.size}
-                </span>
-                {item.colors && item.colors.length > 0 && (
-                  <div className="flex gap-1">
-                    {item.colors.slice(0, 3).map((color, i) => (
-                      <span
-                        key={i}
-                        title={color.name}
-                        className="w-3 h-3 rounded-full border border-gray-300"
-                        style={{
-                          background: color.hex === 'transparent'
-                            ? 'repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 6px 6px'
-                            : color.hex,
-                        }}
-                      />
-                    ))}
-                    {item.colors.length > 3 && (
-                      <span className="text-[10px] text-gray-500">+{item.colors.length - 3}</span>
-                    )}
+        
+                <div className="flex flex-col items-center gap-1">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => updateStock(item._id, Math.max(0, stock - 1))}
+                      className="w-6 h-6 bg-gray-200 hover:bg-gray-300 rounded flex items-center justify-center text-xs font-bold"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      value={stock}
+                      min="0"
+                      className={`w-14 text-center border rounded py-1 text-sm font-bold
+                        ${isOutOfStock ? 'text-red-600 border-red-300 bg-red-50' : 
+                          isLowStock ? 'text-yellow-600 border-yellow-300 bg-yellow-50' : 
+                          'text-green-600 border-green-300'}
+                      `}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        if (!isNaN(val) && val >= 0) {
+                          updateStock(item._id, val);
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={() => updateStock(item._id, stock + 1)}
+                      className="w-6 h-6 bg-gray-200 hover:bg-gray-300 rounded flex items-center justify-center text-xs font-bold"
+                    >
+                      +
+                    </button>
+                  </div>
+                  {isOutOfStock && (
+                    <span className="text-red-600 text-[10px] font-semibold">Нет в наличии</span>
+                  )}
+                  {isLowStock && (
+                    <span className="text-yellow-600 text-[10px] font-semibold">Заканчивается</span>
+                  )}
+                </div>
+
+                <div className='flex gap-2 justify-center'>
+                  <button
+                    onClick={() => setEditingProduct(item)}
+                    className='p-2 text-blue-600 hover:bg-blue-50 rounded transition'
+                    title="Редактировать"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => removeProduct(item._id)}
+                    className='p-2 text-red-600 hover:bg-red-50 rounded transition'
+                    title="Удалить"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mobile */}
+      <div className='lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4'>
+        {list.map((item, index) => {
+          const stock = item.stock || 0;
+          const isOutOfStock = stock === 0;
+          const isLowStock = stock > 0 && stock <= (item.lowStockAlert || 5);
+
+          return (
+            <div key={index} className={`border rounded-lg overflow-hidden ${isOutOfStock ? 'border-red-300' : ''}`}>
+              <div className="relative">
+                <img className='w-full h-48 object-cover' src={item.image} alt={item.title} />
+                {isOutOfStock && (
+                  <div className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">
+                    Нет в наличии
                   </div>
                 )}
               </div>
-
-              {/* Действия */}
-              <div className='flex gap-2 justify-center'>
-                <button
-                  onClick={() => setEditingProduct(item)}
-                  className='p-2 text-blue-600 hover:bg-blue-50 rounded transition'
-                  title="Редактировать"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => removeProduct(item._id)}
-                  className='p-2 text-red-600 hover:bg-red-50 rounded transition'
-                  title="Удалить"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Mobile Cards */}
-      <div className='lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4'>
-        {list.map((item, index) => (
-          <div key={index} className='border rounded-lg overflow-hidden hover:shadow-lg transition'>
-            <img 
-              className='w-full h-48 object-cover' 
-              src={item.image} 
-              alt={item.title} 
-            />
-            <div className='p-4'>
-              <h3 className='font-semibold text-lg mb-1'>{item.title}</h3>
-              <p className='text-sm text-gray-600 mb-2'>{item.desc}</p>
-              
-              <div className='flex justify-between items-center mb-3'>
-                <span className='text-lg font-bold'>{item.price}{currency}</span>
-                <span className='text-sm text-gray-500'>{item.brand}</span>
-              </div>
-
-              <div className='flex flex-wrap gap-1 mb-3'>
-                {item.popular && (
-                  <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">
-                    ⭐ Популярный
+              <div className='p-4'>
+                <h3 className='font-semibold text-lg mb-1'>{item.title}</h3>
+                <p className='text-sm text-gray-600 mb-2'>{item.desc}</p>
+                <div className='flex justify-between items-center mb-3'>
+                  <span className='text-lg font-bold'>{item.price}{currency}</span>
+                  <span className={`text-sm font-bold ${isOutOfStock ? 'text-red-600' : isLowStock ? 'text-yellow-600' : 'text-green-600'}`}>
+                    {stock} шт.
                   </span>
-                )}
-                {item.nibmaterial && (
-                  <span className="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs">
-                    🏆 Золотое перо
-                  </span>
-                )}
-                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
-                  {item.size}
-                </span>
-              </div>
-
-              {item.colors && item.colors.length > 0 && (
-                <div className="flex gap-2 mb-3">
-                  {item.colors.map((color, i) => (
-                    <span
-                      key={i}
-                      title={color.name}
-                      className="w-6 h-6 rounded-full border-2 border-gray-300"
-                      style={{
-                        background: color.hex === 'transparent'
-                          ? 'repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 8px 8px'
-                          : color.hex,
-                      }}
-                    />
-                  ))}
                 </div>
-              )}
-
-              <div className='flex gap-2'>
-                <button
-                  onClick={() => setEditingProduct(item)}
-                  className='flex-1 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm'
-                >
-                  Редактировать
-                </button>
-                <button
-                  onClick={() => removeProduct(item._id)}
-                  className='py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm'
-                >
-                  Удалить
-                </button>
+                <div className='flex gap-2'>
+                  <button
+                    onClick={() => setEditingProduct(item)}
+                    className='flex-1 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm'
+                  >
+                    Редактировать
+                  </button>
+                  <button
+                    onClick={() => removeProduct(item._id)}
+                    className='py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm'
+                  >
+                    Удалить
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Empty State */}
       {list.length === 0 && (
         <div className="text-center py-12 text-gray-500">
           <p className="text-lg mb-2">Товары не найдены</p>
-          <p className="text-sm">Добавьте первый товар</p>
         </div>
       )}
 
-      {/* Modal */}
       {editingProduct && (
         <EditProductModal
           product={editingProduct}

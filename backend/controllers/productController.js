@@ -26,7 +26,6 @@ const addProduct = async (req, res) => {
             });
         }
 
-        //загружаем в Cloudinary
         const result = await cloudinary.uploader.upload(image.path, {
             resource_type: 'image'
         });
@@ -44,7 +43,9 @@ const addProduct = async (req, res) => {
             size,
             colors: colors ? JSON.parse(colors) : [],
             details,
-            image: imageUrl
+            image: imageUrl,
+            stock: Number(stock) || 0,
+            date: Date.now()
         }
 
         console.log(productData);
@@ -128,6 +129,7 @@ const updateProduct = async (req, res) => {
         product.size = size;
         product.details = details;
         product.colors = JSON.parse(colors);
+        product.stock = Number(stock) || 0;  
 
         if (req.file) {
             const imageUrl = await cloudinary.uploader.upload(req.file.path, { resource_type: 'image' });
@@ -145,5 +147,43 @@ const updateProduct = async (req, res) => {
 }
 
 
-export { addProduct, listProducts, removeProduct, singleProduct, updateProduct };
+const updateStock = async (req, res) => {
+    try {
+        const { id, stock } = req.body;
+
+        if (stock < 0) {
+            return res.json({ success: false, message: "Количество не может быть отрицательным" });
+        }
+
+        const product = await productModel.findByIdAndUpdate(
+            id,
+            { stock: Number(stock) },
+            { new: true }
+        );
+
+        if (!product) {
+            return res.json({ success: false, message: "Товар не найден" });
+        }
+
+        res.json({ success: true, message: "Количество обновлено", product });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+const lowStockProducts = async (req, res) => {
+    try {
+        const products = await productModel.find({
+            $expr: { $lte: ["$stock", "$lowStockAlert"] }
+        }).sort({ stock: 1 });
+
+        res.json({ success: true, products });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+export { addProduct, listProducts, removeProduct, singleProduct, updateProduct, updateStock, lowStockProducts }
 

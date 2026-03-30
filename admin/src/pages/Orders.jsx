@@ -143,6 +143,7 @@ const Orders = ({ token }) => {
                 className="border p-2 text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={order.status}
               >
+                <option value="Отменён">Отменён</option>
                 <option value="Заказ сформирован">Заказ сформирован</option>
                 <option value="Собираем заказ">Собираем заказ</option>
                 <option value="Заказ в пути">Заказ в пути</option>

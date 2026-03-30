@@ -1,22 +1,54 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
+import productModel from "../models/productModel.js";
 
 // placing orders using COD method
 const placeOrder = async (req, res) => {
-    console.log('ПОЛУЧЕН ЗАПРОС НА СОЗДАНИЕ ЗАКАЗА');
-    console.log('Request body:', req.body);
     
     try {
         const { userId, items, address, amount } = req.body;
 
         if (!items || items.length === 0) {
-            console.log(' Корзина пуста');
+            console.log('Корзина пуста');
             return res.json({ success: false, message: "Корзина пуста" });
         }
 
         if (!address || !address.name || !address.email || !address.phone) {
-            console.log(' Не заполнены обязательные поля');
+            console.log('Не заполнены обязательные поля');
             return res.json({ success: false, message: "Заполните все обязательные поля" });
+        }
+
+        const stockErrors = [];
+        
+        for (const item of items) {
+            const product = await productModel.findById(item._id);
+            
+            if (!product) {
+                stockErrors.push(`Товар "${item.title}" не найден`);
+                continue;
+            }
+
+            if (product.stock < item.quantity) {
+                if (product.stock === 0) {
+                    stockErrors.push(`"${item.title}" — нет в наличии`);
+                } else {
+                    stockErrors.push(`"${item.title}" — доступно только ${product.stock} шт.`);
+                }
+            }
+        }
+
+        if (stockErrors.length > 0) {
+            return res.json({ 
+                success: false, 
+                message: stockErrors.join('; '),
+                stockErrors 
+            });
+        }
+
+        for (const item of items) {
+            await productModel.findByIdAndUpdate(item._id, {
+                $inc: { stock: -item.quantity }
+            });
         }
 
         const subtotal = items.reduce((sum, it) => {
@@ -36,10 +68,12 @@ const placeOrder = async (req, res) => {
             finalAmount = subtotal;
         }
 
-        console.log('Subtotal:', subtotal);
-        console.log('Final amount:', finalAmount);
-
         if (finalAmount <= 0) {
+            for (const item of items) {
+                await productModel.findByIdAndUpdate(item._id, {
+                    $inc: { stock: item.quantity }
+                });
+            }
             return res.json({ success: false, message: "Неверная сумма заказа" });
         }
 
@@ -54,8 +88,6 @@ const placeOrder = async (req, res) => {
             comment: address.comment || ''
         }
 
-        console.log('Order data to save:', orderData);
-
         const newOrder = new orderModel(orderData);
         await newOrder.save();
 
@@ -64,7 +96,6 @@ const placeOrder = async (req, res) => {
         if (userId) {
             try {
                 await userModel.findByIdAndUpdate(userId, { cartData: {} });
-                console.log('Корзина очищена');
             } catch (error) {
                 console.log('Ошибка очистки корзины:', error);
             }
@@ -82,12 +113,11 @@ const placeOrder = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 }
-//Orders data for Admin Panel
+
+// Orders data for Admin Panel
 const allOrders = async (req, res) => {
     try {
-        const orders = await orderModel.find({})
-            .sort({ date: -1 }); 
-        
+        const orders = await orderModel.find({}).sort({ date: -1 }); 
         res.json({ success: true, orders });
     } catch (error) {
         console.log(error);
@@ -95,7 +125,7 @@ const allOrders = async (req, res) => {
     }
 }
 
-//User Order Data for Frontend
+// User Order Data for Frontend
 const userOrders = async (req, res) => {
     try {
         const { userId } = req.body;
@@ -104,9 +134,7 @@ const userOrders = async (req, res) => {
             return res.json({ success: false, message: "Необходима авторизация" });
         }
         
-        const orders = await orderModel.find({ userId })
-            .sort({ date: -1 });
-        
+        const orders = await orderModel.find({ userId }).sort({ date: -1 });
         res.json({ success: true, orders });
     } catch (error) {
         console.log(error);
@@ -114,13 +142,25 @@ const userOrders = async (req, res) => {
     }
 }
 
-// update order status from Admin panel
+// Update order status from Admin panel
 const updateStatus = async (req, res) => {
     try {
         const { orderId, status } = req.body;
         
         if (!orderId || !status) {
             return res.json({ success: false, message: "Не указан ID заказа или статус" });
+        }
+        
+        if (status === "Отменён") {
+            const order = await orderModel.findById(orderId);
+            if (order && order.status !== "Отменён") {
+                for (const item of order.items) {
+                    await productModel.findByIdAndUpdate(item._id, {
+                        $inc: { stock: item.quantity }
+                    });
+                }
+                console.log('Товары возвращены на склад для заказа:', orderId);
+            }
         }
         
         await orderModel.findByIdAndUpdate(orderId, { status });
@@ -131,4 +171,34 @@ const updateStatus = async (req, res) => {
     }
 }
 
-export { placeOrder, allOrders, userOrders, updateStatus };
+const cancelOrder = async (req, res) => {
+    try {
+        const { orderId } = req.body;
+        const order = await orderModel.findById(orderId);
+
+        if (!order) {
+            return res.json({ success: false, message: "Заказ не найден" });
+        }
+
+        if (order.status === "Отменён") {
+            return res.json({ success: false, message: "Заказ уже отменён" });
+        }
+
+        for (const item of order.items) {
+            await productModel.findByIdAndUpdate(item._id, {
+                $inc: { stock: item.quantity }
+            });
+        }
+
+        order.status = "Отменён";
+        await order.save();
+
+        res.json({ success: true, message: "Заказ отменён, товары возвращены на склад" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+export { placeOrder, allOrders, userOrders, updateStatus, cancelOrder };
