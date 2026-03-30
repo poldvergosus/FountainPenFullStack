@@ -11,17 +11,14 @@
     display: initial !important;
 }
 
-@media (max-width: 1536px) {
+/* ✅ Уменьшаем брейкпоинт до 1280px чтобы десктоп был виден на 1536px */
+@media (max-width: 1280px) {
     .mobile-only {
         display: flex !important;
     }
 
     .desktop-only {
         display: none !important;
-    }
-
-    .mobile-only {
-        display: flex !important;
     }
 
     .mobile-nav {
@@ -221,6 +218,156 @@
     }
 }
 
+@media (min-width: 1281px) and (max-width: 1600px) {
+    /* ── Поиск: ~82% от оригинала ── */
+    .search-button {
+        width: 95px;
+        height: 115px;
+        background-size: 190px 115px;
+        margin-top: -16px;
+        margin-right: 0.4rem;
+    }
+
+    .search-button:hover {
+        background-position: -95px 0;
+    }
+
+    /* ── Корзина: ~82% ── */
+    .cart-button {
+        width: 82px;
+        height: 82px;
+    }
+
+    .cart-icon {
+        width: 65px;
+        height: 62px;
+        background-size: 128px 62px;
+    }
+
+    .cart-button:hover .cart-icon {
+        background-position: -64px 0;
+    }
+
+    .cart-count {
+        width: 23px;
+        height: 23px;
+        font-size: 12px;
+        top: -6px;
+        right: -6px;
+    }
+
+    .cart-price {
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    .arm-icon {
+        width: 160px;
+        height: 68px;
+    }
+
+    .header-center {
+        margin-left: -15px;
+    }
+
+    .header-center h1 {
+        font-size: clamp(14px, 2.8vw, 32px) !important;
+        line-height: clamp(18px, 3.5vw, 48px) !important;
+    }
+
+    .category-menu {
+        gap: 0.6rem !important;
+        font-size: clamp(11px, 0.9vw, 16px) !important;
+    }
+
+    .main-actions {
+        padding-right: 0.5rem;
+    }
+
+    .main-actions .group .flex {
+        width: 82px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .main-actions .group .flex span {
+        font-size: 12px;
+    }
+
+    header.relative {
+        padding-top: 12px;
+        padding-bottom: 22px;
+    }
+}
+
+
+@media (min-width: 1281px) and (max-width: 1700px) {
+    /* ── Поиск: ~78% от оригинала ── */
+    .search-button {
+        width: 90px;
+        height: 109px;
+        background-size: 180px 109px;
+        margin-top: -14px;
+        margin-right: 0.3rem;
+    }
+
+    .search-button:hover {
+        background-position: -90px 0;
+    }
+
+    /* ── Корзина: ~78% ── */
+    .cart-button {
+        width: 78px;
+        height: 78px;
+    }
+
+    .cart-icon {
+        width: 62px;
+        height: 59px;
+        background-size: 122px 59px;
+    }
+
+    .cart-button:hover .cart-icon {
+        background-position: -61px 0;
+    }
+
+    .cart-count {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+        top: -6px;
+        right: -6px;
+    }
+
+    .cart-price {
+        margin-top: 4px;
+        font-size: 11px;
+    }
+
+    .arm-icon {
+        width: 140px;
+        height: 60px;
+    }
+
+
+    .main-actions .group .flex {
+        width: 78px;
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    .main-actions .group .flex span {
+        font-size: 11px;
+    }
+
+    .category-menu {
+        gap: 0.5rem !important;
+        font-size: clamp(10px, 1vw, 14px) !important;
+    }
+
+    
+}
+
 .header-container {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -241,7 +388,7 @@
 }
 
 .arm-icon {
-    width: 165.76px;
+    width: 193.76px;
     height: 90.89px;
 }
 
@@ -261,7 +408,6 @@
     display: flex;
     align-items: end;
     justify-content: center;
-
 }
 
 .category-menu a {
@@ -305,7 +451,6 @@
 .search-button:hover {
     background-position: -116px 0;
 }
-
 
 .cart-button-wrapper {
     display: flex;

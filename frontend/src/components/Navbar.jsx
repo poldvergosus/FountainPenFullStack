@@ -106,7 +106,7 @@ const Navbar = () => {
                 <img
                   src={assets.logo}
                   alt="Логотип"
-                  className="absolute left-[101%] top-1/2 -translate-y-[65%] w-4 md:w-5 2xl:w-9 h-auto"
+                  className="absolute left-[101%] top-1/2 -translate-y-[65%] w-4 md:w-6 2xl:w-7 h-auto"
                 />
               </NavLink>
             </div>

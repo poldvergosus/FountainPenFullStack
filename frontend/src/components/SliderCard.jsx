@@ -10,7 +10,7 @@ const SliderCard = ({ image, title, desc, price, id, _id }) => {
   return (
     <Link
       to={pid ? `/product/${_id}` : '#'}
-      className="relative product-card block w-[90%] p-4 m-4 bg-white cursor-pointer"
+      className="relative product-card block w-[100%] p-4 m-4 bg-white cursor-pointer"
       onClick={(e) => { if (!pid) e.preventDefault(); }}
       aria-disabled={!pid}
     >
