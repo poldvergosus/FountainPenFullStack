@@ -15,12 +15,27 @@ const ShopContextProvider = (props) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState("");
+  const [userProfile, setUserProfile] = useState(null);
 
+  const getUserProfile = async (userToken) => {
+    try {
+      const response = await axios.post(
+        backendUrl + '/api/user/profile',
+        {},
+        { headers: { token: userToken } }
+      );
+      if (response.data.success) {
+        setUserProfile(response.data.user);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const addToCart = async (itemId, quantity = 1) => {
     const product = products.find(p => p._id === itemId);
-    
+
     if (!product) {
       toast.error('Товар не найден');
       return false;
@@ -65,9 +80,8 @@ const ShopContextProvider = (props) => {
   };
 
   const updateQuantity = async (itemId, quantity) => {
-
     const product = products.find(p => p._id === itemId);
-    
+
     if (!product) {
       toast.error('Товар не найден');
       return false;
@@ -75,12 +89,10 @@ const ShopContextProvider = (props) => {
 
     const stock = product.stock ?? 0;
 
-
     if (quantity > stock) {
       toast.error(`Доступно только ${stock} шт.`);
-      quantity = stock; // Ставим максимум
+      quantity = stock;
     }
-
 
     if (quantity <= 0) {
       quantity = 0;
@@ -88,11 +100,11 @@ const ShopContextProvider = (props) => {
 
     let cartData = structuredClone(cartItems);
     cartData[itemId] = quantity;
-    
+
     if (quantity === 0) {
       delete cartData[itemId];
     }
-    
+
     setCartItems(cartData);
 
     if (token) {
@@ -107,12 +119,10 @@ const ShopContextProvider = (props) => {
     return true;
   }
 
-
   const getAvailableStock = (itemId) => {
     const product = products.find(p => p._id === itemId);
     return product ? (product.stock ?? 0) : 0;
   }
-
 
   const validateCart = () => {
     let cartData = structuredClone(cartItems);
@@ -120,7 +130,7 @@ const ShopContextProvider = (props) => {
 
     for (const itemId in cartData) {
       const product = products.find(p => p._id === itemId);
-      
+
       if (!product) {
         delete cartData[itemId];
         hasChanges = true;
@@ -128,7 +138,7 @@ const ShopContextProvider = (props) => {
       }
 
       const stock = product.stock ?? 0;
-      
+
       if (cartData[itemId] > stock) {
         if (stock === 0) {
           delete cartData[itemId];
@@ -151,16 +161,16 @@ const ShopContextProvider = (props) => {
 
     for (const itemId in cartItems) {
       const quantity = cartItems[itemId];
-      
+
       if (quantity > 0) {
         const itemInfo = products.find(
           (product) => product._id.toString() === itemId.toString()
         );
-        
+
         if (itemInfo) {
           const price = Number(itemInfo.price);
           const qty = Number(quantity);
-          
+
           if (!isNaN(price) && !isNaN(qty) && price > 0 && qty > 0) {
             totalAmount += price * qty;
           }
@@ -203,9 +213,9 @@ const ShopContextProvider = (props) => {
     }
   }
 
-  const getUserCart = async (token) => {
+  const getUserCart = async (userToken) => {
     try {
-      const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token } })
+      const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token: userToken } })
       if (response.data.success) {
         setCartItems(response.data.cartData)
       }
@@ -216,19 +226,19 @@ const ShopContextProvider = (props) => {
   }
 
   const refreshProducts = async () => {
-  try {
-    const response = await axios.get(backendUrl + '/api/product/list')
-    if (response.data.success) {
-      const productsWithNumericPrices = response.data.products.map(product => ({
-        ...product,
-        price: Number(product.price) || 0
-      }));
-      setProducts(productsWithNumericPrices);
+    try {
+      const response = await axios.get(backendUrl + '/api/product/list')
+      if (response.data.success) {
+        const productsWithNumericPrices = response.data.products.map(product => ({
+          ...product,
+          price: Number(product.price) || 0
+        }));
+        setProducts(productsWithNumericPrices);
+      }
+    } catch (error) {
+      console.log(error)
     }
-  } catch (error) {
-    console.log(error)
   }
-}
 
   useEffect(() => {
     getProductsData()
@@ -241,34 +251,49 @@ const ShopContextProvider = (props) => {
     }
   }, [products])
 
+
   useEffect(() => {
     if (!token && localStorage.getItem('token')) {
-      setToken(localStorage.getItem('token'))
-      getUserCart(localStorage.getItem('token'))
+      const savedToken = localStorage.getItem('token');
+      setToken(savedToken);
+      getUserCart(savedToken);
+      getUserProfile(savedToken);
     }
   }, [])
 
+
+  useEffect(() => {
+    if (token) {
+      getUserProfile(token);
+    } else {
+      setUserProfile(null);
+    }
+  }, [token])
+
   const value = {
-    products, 
+    products,
     currency,
     delivery_fee,
-    search, 
-    setSearch, 
-    showSearch, 
+    search,
+    setSearch,
+    showSearch,
     setShowSearch,
-    cartItems, 
-    addToCart, 
+    cartItems,
+    addToCart,
     setCartItems,
-    getCartCount, 
+    getCartCount,
     updateQuantity,
-    getCartAmount, 
-    getAvailableStock, 
-    navigate, 
+    getCartAmount,
+    getAvailableStock,
+    navigate,
     backendUrl,
-    setToken, 
+    setToken,
     token,
     blogs,
-    refreshProducts
+    refreshProducts,
+    userProfile,      
+    setUserProfile,    
+    getUserProfile     
   };
 
   return (

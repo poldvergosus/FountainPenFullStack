@@ -10,8 +10,10 @@ const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
   const { 
     navigate, backendUrl, token, cartItems, setCartItems, 
-    getCartAmount, delivery_fee, products, currency
+    getCartAmount, delivery_fee, products, currency,userProfile
   } = useContext(ShopContext);
+
+  
   
   const [formData, setFormData] = useState({
     name: '',
@@ -32,6 +34,19 @@ const PlaceOrder = () => {
       navigate('/cart');
     }
   }, []);
+
+  useEffect(() => {
+  if (userProfile) {
+    setFormData(prev => ({
+      ...prev,
+      name: prev.name || userProfile.name || '',
+      email: prev.email || userProfile.email || '',
+      phone: prev.phone || userProfile.phone || '',
+      city: prev.city || userProfile.city || '',
+      street: prev.street || userProfile.street || '',
+    }));
+  }
+}, [userProfile]);
 
   const cartProblems = useMemo(() => {
     const problems = [];

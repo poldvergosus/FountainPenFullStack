@@ -1,4 +1,3 @@
-import { response } from "express"
 import userModel from "../models/userModel.js";
 import validator from "validator";
 import bcrypt from "bcrypt";
@@ -9,26 +8,21 @@ const createToken = (id) => {
 }
 
 const loginUser = async (req, res) => {
-
     try {
         const { email, password } = req.body;
-
         const user = await userModel.findOne({ email })
 
         if (!user) {
-            return res.json({ success: false, message: "User doesn't exists" })
+            return res.json({ success: false, message: "Пользователь не найден" })
         }
 
         const isMatch = await bcrypt.compare(password, user.password)
 
         if (isMatch) {
-
-            const token = createToken(user.id)
+            const token = createToken(user._id)
             res.json({ success: true, token })
-
-        }
-        else {
-            res.json({ success: false, message: 'Invalid credentials' })
+        } else {
+            res.json({ success: false, message: 'Неверный пароль' })
         }
     } catch (error) {
         console.log(error);
@@ -36,55 +30,89 @@ const loginUser = async (req, res) => {
     }
 }
 
-// route for user registration
 const registerUser = async (req, res) => {
-
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, phone } = req.body;
 
-        //check user already exists or not
         const exists = await userModel.findOne({ email })
         if (exists) {
-            return res.json({ success: false, message: "User already exists" })
+            return res.json({ success: false, message: "Пользователь уже существует" })
         }
 
-        // validating email format and strong password
         if (!validator.isEmail(email)) {
-            return res.json({ success: false, message: "Please enter a valid email" })
+            return res.json({ success: false, message: "Введите корректный email" })
         }
-        if (password.lenght < 8) {
-            return res.json({ success: false, message: "Please enter a strong password" })
+        if (password.length < 8) {
+            return res.json({ success: false, message: "Пароль должен быть минимум 8 символов" })
         }
-
-        //passing user password
 
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
+
         const newUser = new userModel({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            phone: phone || '',
+            notifications: true
         })
 
         const user = await newUser.save()
-
-        const token = createToken(user.id)
+        const token = createToken(user._id)
 
         res.json({ success: true, token })
 
     } catch (error) {
-
         console.log(error);
         res.json({ success: false, message: error.message })
     }
 }
 
-// route for admin login
+const getUserProfile = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const user = await userModel.findById(userId).select('-password');
+
+        if (!user) {
+            return res.json({ success: false, message: "Пользователь не найден" })
+        }
+
+        res.json({ success: true, user })
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message })
+    }
+}
+
+const updateUserProfile = async (req, res) => {
+    try {
+        const { userId, name, phone, city, street, notifications } = req.body;
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.json({ success: false, message: "Пользователь не найден" })
+        }
+
+        if (name) user.name = name;
+        if (phone !== undefined) user.phone = phone;
+        if (city !== undefined) user.city = city;
+        if (street !== undefined) user.street = street;
+        if (notifications !== undefined) user.notifications = notifications;
+
+        await user.save();
+
+        res.json({ success: true, message: "Профиль обновлен" })
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message })
+    }
+}
 
 const adminLogin = async (req, res) => {
-
     try {
-
         const { email, password } = req.body
 
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
@@ -93,12 +121,10 @@ const adminLogin = async (req, res) => {
         } else {
             res.json({ success: false, message: "Неверно введены данные" })
         }
-
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message })
     }
-
 }
 
-export { loginUser, registerUser, adminLogin }
+export { loginUser, registerUser, adminLogin, getUserProfile, updateUserProfile }
