@@ -5,7 +5,7 @@ import { formatPrice } from '../utils/format';
 
 const Cart = () => {
 
-  const { products, currency, cartItems, updateQuantity, navigate, getAvailableStock } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity, navigate, getAvailableStock, cartLoading } = useContext(ShopContext);
 
   const [cartData, setCartData] = useState([]);
 
@@ -38,6 +38,15 @@ const Cart = () => {
     updateQuantity(itemId, newQuantity);
   }
 
+  if (cartLoading) {
+  return (
+    <div className="flex flex-col justify-center items-center min-h-[60vh] gap-4">
+      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-primary text-sm">Загрузка корзины...</p>
+    </div>
+  );
+}
+
   if (cartData.length === 0) {
     return (
       <div className="mx-auto max-w-5xl p-10 text-center">
@@ -53,6 +62,7 @@ const Cart = () => {
     );
   }
 
+  
   return (
     <div className='mx-auto max-w-5xl border-t pt-14 p-4'>
       <div className='text-2xl mb-3'>

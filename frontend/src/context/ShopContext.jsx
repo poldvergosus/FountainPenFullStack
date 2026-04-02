@@ -17,6 +17,7 @@ const ShopContextProvider = (props) => {
   const [blogs, setBlogs] = useState([]);
   const [token, setToken] = useState("");
   const [userProfile, setUserProfile] = useState(null);
+  const [cartLoading, setCartLoading] = useState(true);
 
   const getUserProfile = async (userToken) => {
     try {
@@ -215,6 +216,7 @@ const ShopContextProvider = (props) => {
 
   const getUserCart = async (userToken) => {
     try {
+      setCartLoading(true);
       const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token: userToken } })
       if (response.data.success) {
         setCartItems(response.data.cartData)
@@ -222,6 +224,8 @@ const ShopContextProvider = (props) => {
     } catch (error) {
       console.log(error)
       toast.error(error.message)
+    } finally {
+      setCartLoading(false);
     }
   }
 
@@ -251,16 +255,16 @@ const ShopContextProvider = (props) => {
     }
   }, [products])
 
-
   useEffect(() => {
     if (!token && localStorage.getItem('token')) {
       const savedToken = localStorage.getItem('token');
       setToken(savedToken);
       getUserCart(savedToken);
       getUserProfile(savedToken);
+    } else {
+      setCartLoading(false);
     }
   }, [])
-
 
   useEffect(() => {
     if (token) {
@@ -291,9 +295,10 @@ const ShopContextProvider = (props) => {
     token,
     blogs,
     refreshProducts,
-    userProfile,      
-    setUserProfile,    
-    getUserProfile     
+    userProfile,
+    setUserProfile,
+    getUserProfile,
+    cartLoading,
   };
 
   return (
