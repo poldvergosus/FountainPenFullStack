@@ -14,20 +14,16 @@ const Profile = () => {
   const [street, setStreet] = useState('');
   const [notifications, setNotifications] = useState(true);
 
- 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [showPasswordSection, setShowPasswordSection] = useState(false);
 
-  
   const [loading, setLoading] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
 
- 
   const [isEditing, setIsEditing] = useState(false);
-
 
   const fetchProfile = async () => {
     try {
@@ -92,7 +88,6 @@ const Profile = () => {
     }
   };
 
-
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
@@ -141,7 +136,7 @@ const Profile = () => {
 
   const handleCancelEdit = () => {
     setIsEditing(false);
-    fetchProfile(); 
+    fetchProfile();
   };
 
   useEffect(() => {
@@ -154,8 +149,9 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="text-primary text-lg">Загрузка...</div>
+      <div className="flex flex-col justify-center items-center min-h-[60vh] gap-4">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-primary text-sm">Загрузка профиля...</p>
       </div>
     );
   }

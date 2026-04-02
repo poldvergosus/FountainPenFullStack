@@ -52,7 +52,7 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
           return parsed;
         }
       } catch (e) {
-            console.log(e);
+        console.log(e);
       }
     }
     localStorage.removeItem('colors');
@@ -81,6 +81,16 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+
+    if (!price || Number(price) <= 0) {
+      toast.error('Цена должна быть больше 0');
+      return;
+    }
+
+    if (Number(stock) < 0) {
+      toast.error('Количество не может быть отрицательным');
+      return;
+    }
 
     try {
       const formData = new FormData()

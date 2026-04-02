@@ -51,7 +51,7 @@ const Add = ({ token }) => {
         if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].id) {
           return parsed;
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     localStorage.removeItem('colors');
     return PRESET_COLORS;
@@ -108,6 +108,16 @@ const Add = ({ token }) => {
       return;
     }
 
+    if (!price || Number(price) <= 0) {
+      toast.error('Цена должна быть больше 0');
+      return;
+    }
+
+    if (Number(stock) < 0) {
+      toast.error('Количество не может быть отрицательным');
+      return;
+    }
+
     try {
       const formData = new FormData()
 
@@ -158,7 +168,7 @@ const Add = ({ token }) => {
 
   return (
     <form onSubmit={onSubmitHandler} className='flex flex-col w-full items-start gap-3'>
-      
+
       {/* Drag & Drop загрузка изображения */}
       <div className='w-full'>
         <p className='mb-2 font-medium'>
@@ -263,7 +273,15 @@ const Add = ({ token }) => {
 
       <div className='w-full'>
         <p className='mb-2'>Цена</p>
-        <input onChange={(e) => setPrice(e.target.value)} value={price} className='w-full px-3 py-2 sm:w-[200px]' type="Number" placeholder='6020' required />
+        <input
+          onChange={(e) => setPrice(e.target.value)}
+          value={price}
+          className='w-full px-3 py-2 sm:w-[200px]'
+          type="number"
+          min="1"
+          placeholder='6020'
+          required
+        />
       </div>
 
       <div className='w-full'>
