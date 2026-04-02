@@ -218,23 +218,24 @@
 }
 
 @media (min-width: 1281px) and (max-width: 1600px) {
-    /* ── Поиск: ~82% от оригинала ── */
+
     .search-button {
         width: 95px;
         height: 115px;
         background-size: 190px 115px;
         margin-top: -16px;
         margin-right: 0.4rem;
+        will-change: background-position;
     }
 
     .search-button:hover {
         background-position: -95px 0;
     }
 
-    /* ── Корзина: ~82% ── */
     .cart-button {
         width: 82px;
         height: 82px;
+        will-change: background-position;
     }
 
     .cart-icon {

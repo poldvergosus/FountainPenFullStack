@@ -7,11 +7,16 @@ import { toast } from 'react-toastify'
 
 const EditProductModal = ({ product, token, onClose, onSuccess }) => {
   const PRESET_COLORS = [
-    { name: "Голубой", hex: "#229ED9" },
-    { name: "Синий", hex: "#1e40af" },
-    { name: "Красный", hex: "#ef4444" },
-    { name: "Зеленый", hex: "#22c55e" },
-    { name: "Прозрачный", hex: "transparent", isTransparent: true }
+    { id: "color_1", name: "Красный", hex: "#ef4444" },
+    { id: "color_2", name: "Черный", hex: "#000000" },
+    { id: "color_3", name: "Белый", hex: "#ffffff" },
+    { id: "color_4", name: "Голубой", hex: "#229ED9" },
+    { id: "color_5", name: "Синий", hex: "#1e40af" },
+    { id: "color_6", name: "Желтый", hex: "#f7ef5f" },
+    { id: "color_7", name: "Фиолетовый", hex: "#bd1fdb" },
+    { id: "color_8", name: "Зеленый", hex: "#22c55e" },
+    { id: "color_9", name: "Коричневый", hex: "#9d511b" },
+    { id: "color_10", name: "Прозрачный", hex: "transparent", isTransparent: true }
   ];
 
   const BRANDS = [
@@ -38,19 +43,36 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
   const [details, setDetails] = useState(product.details || "")
   const [stock, setStock] = useState(product.stock || 0)
 
-  // Цвета
   const [colors, setColors] = useState(() => {
     const saved = localStorage.getItem('colors');
-    return saved ? JSON.parse(saved) : PRESET_COLORS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].id) {
+          return parsed;
+        }
+      } catch (e) {
+            console.log(e);
+      }
+    }
+    localStorage.removeItem('colors');
+    return PRESET_COLORS;
   })
 
   const [selectedColors, setSelectedColors] = useState(() => {
     if (!product.colors || product.colors.length === 0) return [];
 
     return product.colors.map(productColor => {
-      const index = colors.findIndex(c => c.hex === productColor.hex && c.name === productColor.name);
-      return index !== -1 ? index : -1;
-    }).filter(i => i !== -1);
+      if (productColor.id) {
+        const found = colors.find(c => c.id === productColor.id);
+        if (found) return found.id;
+      }
+      const found = colors.find(c => c.hex === productColor.hex && c.name === productColor.name);
+      if (found) return found.id;
+      const foundByHex = colors.find(c => c.hex === productColor.hex);
+      if (foundByHex) return foundByHex.id;
+      return null;
+    }).filter(id => id !== null);
   });
 
   useEffect(() => {
@@ -73,8 +95,13 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
       formData.append("nibmaterial", nibmaterial);
       formData.append("size", size);
       formData.append("details", details);
-      formData.append("colors", JSON.stringify(selectedColors.map(idx => colors[idx])));
       formData.append("stock", stock);
+
+      const selectedColorObjects = selectedColors
+        .map(id => colors.find(color => color.id === id))
+        .filter(Boolean);
+
+      formData.append("colors", JSON.stringify(selectedColorObjects));
 
       if (image1) {
         formData.append("image1", image1)
@@ -111,7 +138,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
         </div>
 
         <form onSubmit={onSubmitHandler} className='flex flex-col p-6 gap-4'>
-          {/* Изображение */}
           <div>
             <p className='mb-2 font-medium'>Изображение товара</p>
             <div className='flex gap-4 items-center'>
@@ -135,7 +161,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             </div>
           </div>
 
-          {/* Название */}
           <div>
             <p className='mb-2 font-medium'>Название продукта</p>
             <input
@@ -148,7 +173,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             />
           </div>
 
-          {/* Подзаголовок */}
           <div>
             <p className='mb-2 font-medium'>Подзаголовок</p>
             <input
@@ -161,7 +185,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             />
           </div>
 
-          {/* Цена */}
           <div>
             <p className='mb-2 font-medium'>Цена</p>
             <input
@@ -187,7 +210,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             />
           </div>
 
-          {/* Чекбоксы */}
           <div className='flex gap-6'>
             <div className='flex gap-2 items-center'>
               <input
@@ -210,7 +232,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             </div>
           </div>
 
-          {/* Категория и размер */}
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
             <div>
               <p className='mb-2 font-medium'>Категория</p>
@@ -244,7 +265,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             </div>
           </div>
 
-          {/* Бренд */}
           <div>
             <p className='mb-2 font-medium'>Бренд</p>
             <select
@@ -256,7 +276,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             </select>
           </div>
 
-          {/* Описание */}
           <div>
             <p className='mb-2 font-medium'>Описание</p>
             <textarea
@@ -269,7 +288,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             />
           </div>
 
-          {/* Цвета */}
           <ColorPicker
             colors={colors}
             setColors={setColors}
@@ -277,7 +295,6 @@ const EditProductModal = ({ product, token, onClose, onSuccess }) => {
             setSelected={setSelectedColors}
           />
 
-          {/* Кнопки */}
           <div className="flex gap-3 pt-4">
             <button
               type='submit'

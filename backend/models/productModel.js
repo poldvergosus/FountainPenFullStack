@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
     details: { type: String },
     stock: { type: Number, required: true, default: 0 }, 
     lowStockAlert: { type: Number, default: 5 },
-    date: { type: Number, required: true }
+    date: { type: Number, default: Date.now }
 });
 
 const productModel = mongoose.models.product || mongoose.model("product", productSchema);

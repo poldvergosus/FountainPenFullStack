@@ -24,7 +24,7 @@ const ProductGrid = ({ title, products = [], onSizeClick, columns = 3 }) => {
   };
 
   return (
-    <section className="mt-[2.5rem] -my-8 w-full">
+    <section className="mt-[2.5rem] my-8 w-full">
       {/* Заголовок */}
       {title && (
         <h2 className="section-title flex items-center justify-center font-literata font-bold text-primary text-[clamp(1.8rem,4vw,2.5rem)] leading-[71px] gap-8 relative max-w-[90%] mx-auto mb-[2rem]">

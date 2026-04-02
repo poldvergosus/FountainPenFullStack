@@ -14,7 +14,8 @@ const addProduct = async (req, res) => {
             nibmaterial,
             size,
             colors,
-            details
+            details,
+            stock 
         } = req.body;
 
         const image = req.file;
@@ -65,56 +66,50 @@ const addProduct = async (req, res) => {
     }
 };
 
-
 // function for list product
-
 const listProducts = async (req, res) => {
     try {
-
         const products = await productModel.find({});
         res.json({ success: true, products })
-
     } catch (error) {
-        console.error('Ошибка добавления продукта:', error);
+        console.error('Ошибка получения продуктов:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 }
 
 // function for remove product
-
 const removeProduct = async (req, res) => {
     try {
         await productModel.findByIdAndDelete(req.body.id)
         res.json({ success: true, message: "Продукт удален" })
     } catch (error) {
-        console.error('Ошибка добавления продукта:', error);
+        console.error('Ошибка удаления продукта:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 }
 
 // function for single product info
-
 const singleProduct = async (req, res) => {
     try {
         const { productId } = req.body
         const product = await productModel.findById(productId)
-        res.json({success:true, product})
+        res.json({ success: true, product })
     } catch (error) {
-        console.error('Ошибка добавления продукта:', error);
+        console.error('Ошибка получения продукта:', error);
         res.status(500).json({ success: false, message: error.message });
     }
-
 }
 
 const updateProduct = async (req, res) => {
     try {
-        const { 
-            id, title, desc, price, popular, category, 
-            brand, nibmaterial, size, details, colors 
+        const {
+            id, title, desc, price, popular, category,
+            brand, nibmaterial, size, details, colors,
+            stock  
         } = req.body;
 
         const product = await productModel.findById(id);
-        
+
         if (!product) {
             return res.json({ success: false, message: "Товар не найден" });
         }
@@ -129,7 +124,7 @@ const updateProduct = async (req, res) => {
         product.size = size;
         product.details = details;
         product.colors = JSON.parse(colors);
-        product.stock = Number(stock) || 0;  
+        product.stock = Number(stock) || 0;
 
         if (req.file) {
             const imageUrl = await cloudinary.uploader.upload(req.file.path, { resource_type: 'image' });
@@ -145,7 +140,6 @@ const updateProduct = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 }
-
 
 const updateStock = async (req, res) => {
     try {
@@ -186,4 +180,3 @@ const lowStockProducts = async (req, res) => {
 }
 
 export { addProduct, listProducts, removeProduct, singleProduct, updateProduct, updateStock, lowStockProducts }
-

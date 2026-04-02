@@ -454,37 +454,6 @@ const PlaceOrder = () => {
       </div>
 
       <div className='mt-8 w-full sm:max-w-[380px]'>
-      
-        <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <p className="text-sm font-medium text-primary mb-2">
-            Ваш заказ ({orderSummary.totalQuantity} шт.)
-          </p>
-          <div className="space-y-2 max-h-48 overflow-y-auto">
-            {Object.entries(cartItems).map(([productId, quantity]) => {
-              if (quantity <= 0) return null;
-              const product = products.find(p => p._id === productId);
-              if (!product) return null;
-              
-              const hasIssue = cartProblems.some(p => p.productId === productId);
-              
-              return (
-                <div 
-                  key={productId} 
-                  className={`flex justify-between text-sm py-1 ${hasIssue ? 'text-red-500 bg-red-50 px-2 rounded' : ''}`}
-                >
-                  <span className="truncate mr-2">
-                    {product.title} × {quantity}
-                    {hasIssue && ' ⚠️'}
-                  </span>
-                  <span className="font-medium whitespace-nowrap">
-                    {(product.price * quantity).toLocaleString('ru-RU')} {currency}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
         <CartTotal />
 
         <div className='mt-8'>

@@ -107,7 +107,6 @@ const AddBlog = ({ token }) => {
     <form onSubmit={onSubmitHandler} className='flex flex-col w-full items-start gap-4'>
       <h1 className='text-2xl font-bold mb-2'>Добавить статью в блог</h1>
 
-      {/* ✅ Убрали required из скрытого input */}
       <div className='w-full'>
         <p className='mb-2 font-medium'>
           Изображение статьи <span className="text-red-500">*</span>
