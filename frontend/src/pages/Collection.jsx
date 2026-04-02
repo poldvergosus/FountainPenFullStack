@@ -294,7 +294,7 @@ const Collection = () => {
                               <input
                                 type="number"
                                 ref={minInputRef}
-                                className="border border-primary rounded px-2 py-1 w-20 text-sm no-spinner text-primary"
+                                className="border border-primary px-2 py-1 w-20 text-sm no-spinner text-primary"
                               />
                             </label>
                             <span className="text-gray-500">—</span>
@@ -302,7 +302,7 @@ const Collection = () => {
                               <input
                                 type="number"
                                 ref={maxInputRef}
-                                className="border border-primary rounded px-2 py-1 w-20 text-sm no-spinner text-primary"
+                                className="border border-primary px-2 py-1 w-20 text-sm no-spinner text-primary"
                               />
                             </label>
                           </div>
@@ -435,7 +435,7 @@ const Collection = () => {
             <div className="mt-4 flex justify-start">
               <button
                 onClick={resetFilters}
-                className="px-4 py-2 border-2 border-primary text-primary text-sm rounded hover:text-accent hover:border-accent font-medium transition"
+                className="px-4 py-2 border-2 border-primary text-primary text-sm hover:text-accent hover:border-accent font-medium transition"
               >
                 Сбросить фильтры
               </button>
@@ -447,8 +447,7 @@ const Collection = () => {
 
           <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
             <p className="text-sm text-gray-600">
-              Найдено: <span className="font-semibold text-primary">{filteredProducts.length}</span> товаров
-              {inStockOnly && <span className="text-green-600 ml-1">(только в наличии)</span>}
+
             </p>
             
             <select
