@@ -3,12 +3,18 @@ import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 
 const Orders = () => {
-  const { backendUrl, token, currency } = useContext(ShopContext);
+  const { backendUrl, token, currency, navigate } = useContext(ShopContext);
   const [orderData, setorderData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const loadOrderData = async () => {
     try {
-      if (!token) return;
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
 
       const response = await axios.post(
         backendUrl + '/api/order/userorders',
@@ -21,7 +27,6 @@ const Orders = () => {
 
         response.data.orders.forEach((order) => {
           order.items.forEach((item) => {
-            
             const newItem = {
               ...item,
               status: order.status,
@@ -34,10 +39,11 @@ const Orders = () => {
         });
 
         setorderData(allOrdersItem.reverse());
-        console.log("Orders loaded:", allOrdersItem);
       }
     } catch (error) {
       console.error("Failed to load orders:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,12 +51,29 @@ const Orders = () => {
     loadOrderData();
   }, [token]);
 
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-[60vh] gap-4">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-primary text-sm">Загрузка заказов...</p>
+      </div>
+    );
+  }
+
   return (
     <div className='border-t pt-16 px-4 max-w-5xl mx-auto'>
       <h2 className='text-2xl font-bold mb-6 text-primary'>Ваши заказы</h2>
 
       {orderData.length === 0 ? (
-        <p>У вас пока нет заказов</p>
+        <div className="text-center py-10">
+          <p className="text-lg text-primary mb-4">У вас пока нет заказов</p>
+          <button
+            onClick={() => navigate('/collection')}
+            className="px-6 py-3 bg-primary text-white hover:bg-accent transition"
+          >
+            Перейти к покупкам
+          </button>
+        </div>
       ) : (
         orderData.map((item, index) => {
           return (
