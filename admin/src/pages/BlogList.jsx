@@ -62,7 +62,7 @@ const BlogList = ({ token }) => {
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         {list.map((item, index) => (
-          <div key={index} className='border rounded-lg overflow-hidden hover:shadow-lg transition'>
+          <div key={index} className='border overflow-hidden hover:shadow-lg transition'>
             <img 
               className='w-full h-48 object-cover' 
               src={item.image} 
@@ -77,7 +77,7 @@ const BlogList = ({ token }) => {
               <div className='flex gap-2'>
                 <button
                   onClick={() => removeBlog(item._id)}
-                  className='flex-1 py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm'
+                  className='flex-1 py-2 px-4 bg-red-600 text-white hover:bg-red-700 transition text-sm'
                 >
                   Удалить
                 </button>

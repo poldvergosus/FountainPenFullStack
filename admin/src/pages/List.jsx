@@ -73,10 +73,10 @@ const List = ({ token }) => {
           <span className="text-gray-600">Всего: {list.length}</span>
           <span className="text-green-600">На складе: {totalStock} шт.</span>
           {lowStock > 0 && (
-            <span className="text-yellow-600">⚠️ Заканчиваются: {lowStock}</span>
+            <span className="text-yellow-600">Заканчиваются: {lowStock}</span>
           )}
           {outOfStock > 0 && (
-            <span className="text-red-600">❌ Нет в наличии: {outOfStock}</span>
+            <span className="text-red-600">Нет в наличии: {outOfStock}</span>
           )}
         </div>
       </div>
@@ -84,7 +84,7 @@ const List = ({ token }) => {
       {/* Desktop */}
       <div className='hidden lg:block overflow-x-auto'>
         <div className="min-w-[1200px]">
-          <div className='grid grid-cols-[80px_2fr_1fr_1fr_1fr_1fr_120px_100px] gap-3 items-center py-3 px-4 bg-gray-100 border rounded-t-lg text-sm font-semibold text-gray-700'>
+          <div className='grid grid-cols-[80px_2fr_1fr_1fr_1fr_1fr_120px_100px] gap-3 items-center py-3 px-4 bg-gray-100 border text-sm font-semibold text-gray-700'>
             <div>Фото</div>
             <div>Название</div>
             <div>Цена</div>
@@ -107,7 +107,7 @@ const List = ({ token }) => {
                 `}
                 key={index}
               >
-                <img className='w-16 h-16 object-cover rounded border' src={item.image} alt={item.title} />
+                <img className='w-16 h-16 object-contain bg-white border' src={item.image} alt={item.title} />
 
                 <div>
                   <p className="font-medium text-gray-800">{item.title}</p>
@@ -130,7 +130,7 @@ const List = ({ token }) => {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => updateStock(item._id, Math.max(0, stock - 1))}
-                      className="w-6 h-6 bg-gray-200 hover:bg-gray-300 rounded flex items-center justify-center text-xs font-bold"
+                      className="w-6 h-6 bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-xs font-bold"
                     >
                       −
                     </button>
@@ -138,11 +138,7 @@ const List = ({ token }) => {
                       type="number"
                       value={stock}
                       min="0"
-                      className={`w-14 text-center border rounded py-1 text-sm font-bold
-                        ${isOutOfStock ? 'text-red-600 border-red-300 bg-red-50' : 
-                          isLowStock ? 'text-yellow-600 border-yellow-300 bg-yellow-50' : 
-                          'text-green-600 border-green-300'}
-                      `}
+                      className={`w-14 text-center border text-sm font-bold`}
                       onChange={(e) => {
                         const val = Number(e.target.value);
                         if (!isNaN(val) && val >= 0) {
@@ -152,7 +148,7 @@ const List = ({ token }) => {
                     />
                     <button
                       onClick={() => updateStock(item._id, stock + 1)}
-                      className="w-6 h-6 bg-gray-200 hover:bg-gray-300 rounded flex items-center justify-center text-xs font-bold"
+                      className="w-6 h-6 bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-xs font-bold"
                     >
                       +
                     </button>
@@ -168,7 +164,7 @@ const List = ({ token }) => {
                 <div className='flex gap-2 justify-center'>
                   <button
                     onClick={() => setEditingProduct(item)}
-                    className='p-2 text-blue-600 hover:bg-blue-50 rounded transition'
+                    className='p-2 text-blue-600 hover:bg-blue-50 transition'
                     title="Редактировать"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,7 +173,7 @@ const List = ({ token }) => {
                   </button>
                   <button
                     onClick={() => removeProduct(item._id)}
-                    className='p-2 text-red-600 hover:bg-red-50 rounded transition'
+                    className='p-2 text-red-600 hover:bg-red-50 transition'
                     title="Удалить"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
